@@ -1,0 +1,28 @@
+{
+  "name": "react-boilerplate-example",
+  "version": "1.0.0",
+  "description": "react-component-boilerplate-example-description",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/olegakbarov/react-component-boilerplate.git"
+  },
+  "keywords": [
+    "react"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/olegakbarov/react-component-boilerplate/issues"
+  },
+  "homepage": "https://github.com/olegakbarov/react-component-boilerplate",
+  "dependencies": {
+    "react": "^0.14"
+  },
+  "devDependencies": {
+    "webpack": "^1.9.11",
+    "webpack-dev-server": "^1.9.0"
+  }
+}
