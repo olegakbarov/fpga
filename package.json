@@ -4,7 +4,7 @@
   "description": "react-component-boilerplate-example-description",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --hot --content-base ./build --inline --config ./webpack.config.babel.js",
+    "dev": "webpack-dev-server --hot --content-base ./build --inline --config ./webpack.config.js",
     "start": "node index.js"
   },
   "repository": {
@@ -23,11 +23,13 @@
     "react": "^0.14"
   },
   "devDependencies": {
-    "babel": "^6.1.18",
-    "babel-core": "^6.2.1",
+    "babel": "5.8.23",
+    "babel-loader": "^6.2.0",
     "babel-plugin-react-transform": "^1.1.1",
-    "babel-preset-stage-0": "^6.1.18",
-    "babel-runtime": "^6.2.0",
+    "babel-polyfill": "^6.2.0",
+    "babel-runtime": "5.8.*",
+    "nyan-progress-webpack-plugin": "^1.1.4",
+    "react-dom": "^0.14.3",
     "react-transform-hmr": "^1.0.1",
     "webpack": "^1.9.11",
     "webpack-dev-server": "^1.9.0"
