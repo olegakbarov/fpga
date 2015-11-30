@@ -4,8 +4,7 @@
   "description": "react-component-boilerplate-example-description",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --hot --content-base ./build --inline --config ./webpack.config.js",
-    "start": "node index.js"
+    "dev": "node ./example/server.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +27,7 @@
     "babel-plugin-react-transform": "^1.1.1",
     "babel-polyfill": "^6.2.0",
     "babel-runtime": "5.8.*",
+    "eslint-plugin-react": "^3.11.1",
     "nyan-progress-webpack-plugin": "^1.1.4",
     "react-dom": "^0.14.3",
     "react-transform-hmr": "^1.0.1",

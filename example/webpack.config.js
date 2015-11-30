@@ -7,14 +7,19 @@ const env = process.env.NODE_ENV || 'development';
 
 module.exports = {
   devtool: 'eval',
-  entry: [
-    './src/index'
-  ],
+  entry: './example/index.js',
 
   output: {
-    path: path.join(__dirname, './build/'),
+    path: path.join(__dirname, '.'),
     filename: 'bundle.js',
     publicPath: '/'
+  },
+
+  resolve: {
+    alias: {
+      'Component': path.join(__dirname, '../src')
+    },
+    extensions: ['', '.js']
   },
 
   plugins: [
@@ -26,7 +31,7 @@ module.exports = {
     loaders: [{
       test: /\.js$/,
       loaders: ['babel'],
-      include: path.join(__dirname, 'src')
+      include: [ path.join(__dirname, '../src'), path.join(__dirname, '.') ]
     },
     {
       test: /\.css$/,
