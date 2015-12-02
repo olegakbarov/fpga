@@ -1,18 +1,21 @@
 /* eslint-env node */
-var path = require('path');
-var webpack = require('webpack');
-var NyanProgressPlugin = require('nyan-progress-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 
 const env = process.env.NODE_ENV || 'development';
 
-module.exports = {
-  devtool: 'eval',
-  entry: './example/index.js',
+module.exports = cfg = {
+  devtool: 'cheap-inline-module-source-map',
+  entry: [
+    'webpack-dev-server/client?http://localhost:8080',
+    'webpack/hot/only-dev-server',
+    path.join(__dirname, './root')
+  ],
 
   output: {
     path: path.join(__dirname, '.'),
-    filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: '/assets/',
+    filename: 'bundle.js'
   },
 
   resolve: {
@@ -24,14 +27,22 @@ module.exports = {
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new NyanProgressPlugin(),
+    new webpack.EnvironmentPlugin('NODE_ENV')
   ],
+
+  devServer: {
+    contentBase: '/'
+  },
 
   module: {
     loaders: [{
       test: /\.js$/,
       loaders: ['babel'],
-      include: [ path.join(__dirname, '../src'), path.join(__dirname, '.') ]
+      exclude: '/node_modules/',
+      include: [
+        __dirname,
+        path.resolve(__dirname, '../src')
+      ]
     },
     {
       test: /\.css$/,

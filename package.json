@@ -4,7 +4,7 @@
   "description": "react-component-boilerplate-example-description",
   "main": "index.js",
   "scripts": {
-    "dev": "node ./example/server.js"
+    "dev": "node example/server.js"
   },
   "repository": {
     "type": "git",
