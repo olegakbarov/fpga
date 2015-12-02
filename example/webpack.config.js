@@ -31,14 +31,14 @@ module.exports = cfg = {
   ],
 
   devServer: {
-    contentBase: '/'
+    contentBase: __dirname
   },
 
   module: {
     loaders: [{
       test: /\.js$/,
       loaders: ['babel'],
-      exclude: '/node_modules/',
+      exclude: /node_modules/,
       include: [
         __dirname,
         path.resolve(__dirname, '../src')

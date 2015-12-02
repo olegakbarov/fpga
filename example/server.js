@@ -6,6 +6,7 @@ const config = require('./webpack.config');
 const compiler = webpack(config);
 const server = new WebpackDevServer(compiler, {
   publicPath: config.output.publicPath,
+  contentBase: config.devServer.contentBase,
   hot: true,
   stats: {
     colors: true
