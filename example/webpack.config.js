@@ -18,7 +18,6 @@ module.exports = {
   },
 
   resolve: {
-    root: path.join(__dirname, '..'),
     alias: {
       Component: path.join(__dirname, '../src')
     },
@@ -26,8 +25,7 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.EnvironmentPlugin('NODE_ENV')
+    new webpack.HotModuleReplacementPlugin()
   ],
 
   devServer: {

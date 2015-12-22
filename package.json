@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/olegakbarov/react-component-boilerplate",
   "dependencies": {
-    "babel-plugin-react-transform": "^1.1.1",
     "react": "^0.14"
   },
   "devDependencies": {
