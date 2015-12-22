@@ -11,12 +11,11 @@ const server = new WebpackDevServer(compiler, {
   stats: {
     colors: true
   }
-})
+});
 
-server.listen(8080, 'localhost', function (err) {
+server.listen(8080, 'localhost',  err  => {
   if (err) {
     console.log(err);
   }
-  console.log(config.output.publicPath)
   console.log('Listening at localhost:8080');
 });
