@@ -1,10 +1,11 @@
 /* eslint-env node */
+/* eslint-global env */
 const path = require('path');
 const webpack = require('webpack');
 
 const env = process.env.NODE_ENV || 'development';
 
-module.exports = cfg = {
+module.exports = {
   devtool: 'cheap-inline-module-source-map',
   entry: [
     'webpack-dev-server/client?http://localhost:8080',
@@ -21,7 +22,7 @@ module.exports = cfg = {
   resolve: {
     root: path.join(__dirname, '..'),
     alias: {
-      'Component': path.join(__dirname, '../src')
+      Component: path.join(__dirname, '../src')
     },
     extensions: ['', '.js']
   },
@@ -41,7 +42,7 @@ module.exports = cfg = {
       loader: 'babel-loader',
       query: {
         plugins: ['transform-runtime'],
-        presets: ['es2015', 'stage-0', 'react'],
+        presets: ['es2015', 'stage-0', 'react']
       },
       exclude: /node_modules/,
       include: [
