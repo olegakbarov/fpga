@@ -3,8 +3,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const env = process.env.NODE_ENV || 'development';
-
 module.exports = {
   devtool: 'cheap-inline-module-source-map',
   entry: [
@@ -40,10 +38,6 @@ module.exports = {
     loaders: [{
       test: /\.js$/,
       loader: 'babel-loader',
-      query: {
-        plugins: ['transform-runtime'],
-        presets: ['es2015', 'stage-0', 'react']
-      },
       exclude: /node_modules/,
       include: [
         __dirname,

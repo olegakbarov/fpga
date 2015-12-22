@@ -9,7 +9,7 @@ export default class Component extends React.Component {
   render() :any {
     return (
       <div>
-         The sum of 1337 and 7331 would be {this.sum(1337, 7331)}
+         The sum of 13 and 37 would be {this.sum(13, 37)}
       </div>
     );
   }

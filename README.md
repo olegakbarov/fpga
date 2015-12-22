@@ -1,6 +1,6 @@
 # React Component Boilerplate
 
-Basic component boilerplate.
+Basic [React](https://facebook.github.io/react/) component boilerplate with [Babel6](http://babeljs.io/), [Webpack](https://webpack.github.io/), hot module replacement via [transform](https://github.com/gaearon/babel-plugin-react-transform) [Flow](http://flowtype.org/) and `eslint`-ready.
 
 ### How-to
 
@@ -9,6 +9,15 @@ Basic component boilerplate.
 `$ npm run dev`
 
 navigate to `localhost:8080`
+
+### Got error?
+
+```
+ERROR in ./example/root.js
+Module build failed: TypeError: Plugin is not a function
+```
+
+Try `npm install babel-plugin-react-transform@beta --save-dev` or advice me how to allow `npm i` to install betas of packages :)
 
 ### Considerations
 
