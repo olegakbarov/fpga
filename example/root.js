@@ -1,4 +1,6 @@
 /* eslint-env browser */
+require("babel-core/register");
+
 import React from 'react';
 import RD from 'react-dom';
 import App from './App';

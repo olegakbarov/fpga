@@ -19,6 +19,7 @@ module.exports = cfg = {
   },
 
   resolve: {
+    root: path.join(__dirname, '..'),
     alias: {
       'Component': path.join(__dirname, '../src')
     },
@@ -37,7 +38,11 @@ module.exports = cfg = {
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['babel'],
+      loader: 'babel-loader',
+      query: {
+        plugins: ['transform-runtime'],
+        presets: ['es2015', 'stage-0', 'react'],
+      },
       exclude: /node_modules/,
       include: [
         __dirname,
