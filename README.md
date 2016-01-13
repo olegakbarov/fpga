@@ -1,6 +1,6 @@
 # React Component Boilerplate
 
-Minimal [React](https://facebook.github.io/react/) component boilerplate with [Babel 6](http://babeljs.io/), [Webpack](https://webpack.github.io/), hot module replacement via [babel-plugin-react-transform](https://github.com/gaearon/babel-plugin-react-transform), [Flow](http://flowtype.org/) and `eslint`-friendly.
+Minimal [React](https://facebook.github.io/react/) component boilerplate with [Babel 6](http://babeljs.io/), [Webpack](https://webpack.github.io/), hot module replacement via [babel-plugin-react-transform](https://github.com/gaearon/babel-plugin-react-transform), [Flow](http://flowtype.org/), tests with [Tape](https://github.com/substack/tape) and `eslint`-friendly.
 
 Inspired by Dan Abramov's [library boilerplate](https://github.com/gaearon/library-boilerplate)
 
