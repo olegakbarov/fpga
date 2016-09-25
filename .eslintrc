@@ -5,8 +5,10 @@ parser: babel-eslint
 
 plugins:
   - react
+  - flowtype-errors
 
 rules:
+  flowtype-errors/show-errors: 2
   brace-style:
     - 2
     - 1tbs
