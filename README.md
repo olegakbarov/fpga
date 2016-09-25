@@ -1,4 +1,7 @@
-# React Component Boilerplate
+React Component Boilerplate
+===========================
+[![Build Status](https://travis-ci.org/olegakbarov/react-component-boilerplate.svg?branch=master)](https://travis-ci.org/olegakbarov/react-component-boilerplate)
+[![Dependency Status](https://img.shields.io/david/olegakbarov/react-component-boilerplate.svg)](https://david-dm.org/olegakbarov/react-component-boilerplate)
 
 Minimal [React](https://facebook.github.io/react/) component boilerplate with [Babel 6](http://babeljs.io/), [Webpack](https://webpack.github.io/), hot module replacement via [babel-plugin-react-transform](https://github.com/gaearon/babel-plugin-react-transform), [Flow](http://flowtype.org/), tests with [Tape](https://github.com/substack/tape) and `eslint`-friendly.
 
