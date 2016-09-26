@@ -41,7 +41,7 @@
     "enzyme": "^2.4.1",
     "eslint": "^3.6.0",
     "eslint-plugin-flowtype": "^2.19.0",
-    "eslint-plugin-flowtype-errors": "^1.1.0",
+    "eslint-plugin-flowtype-errors": "^1.2.0",
     "eslint-plugin-react": "^6.3.0",
     "faucet": "0.0.1",
     "react-addons-test-utils": "^15.3.2",
