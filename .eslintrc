@@ -5,6 +5,7 @@ parser: babel-eslint
 
 plugins:
   - react
+  - flowtype
   - flowtype-errors
 
 rules:
@@ -15,9 +16,6 @@ rules:
     - allowSingleLine: true
 
   comma-style: 2
-  # complexity:
-  #   - 2
-  #   - 5
 
   consistent-this:
     - 2
@@ -110,7 +108,6 @@ rules:
 
   semi: 2
 
-  space-after-keywords: 2
   space-before-blocks: 2
   space-before-function-paren:
     - 2
@@ -127,35 +124,3 @@ rules:
   jsx-quotes:
     - 2
     - prefer-double
-
-  react/display-name:
-    - 2
-    - acceptTranspilerName: true
-
-  react/jsx-boolean-value: 2
-  react/jsx-curly-spacing: 2
-
-  react/jsx-no-duplicate-props:
-    - 2
-    - ignoreCase: true
-
-  react/jsx-no-undef: 2
-
-  react/jsx-sort-prop-types: 2
-  react/jsx-uses-react:
-    - 2
-    - ignoreCase: true
-
-  react/jsx-uses-vars: 2
-
-  react/no-did-mount-set-state:
-    - 2
-    - allow-in-func
-
-  react/no-did-update-set-state: 2
-  react/no-multi-comp: 2
-  react/no-unknown-property: 2
-  react/prop-types: 2
-  react/self-closing-comp: 2
-  react/sort-comp: 2
-  react/wrap-multilines: 2

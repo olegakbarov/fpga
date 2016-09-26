@@ -4,9 +4,9 @@
   "description": "react-component-boilerplate-example-description",
   "scripts": {
     "dev": "node example/server.js",
-    "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "NODE_ENV=production babel-tape-runner tests/**/*.test.js | faucet"
+    "lint": "eslint src tests example *.js",
+    "spec": "NODE_ENV=production babel-tape-runner tests/**/*.test.js | faucet",
+    "test": "npm run lint && npm run spec"
   },
   "repository": {
     "type": "git",

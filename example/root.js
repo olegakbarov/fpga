@@ -1,9 +1,9 @@
 /* eslint-env browser */
-import React from 'react';
-import RD from 'react-dom';
+/* eslint no-unused-vars: 0 */
+import DOM from 'react-dom';
 import App from './App';
 
-RD.render(
+DOM.render(
   <App />,
   document.getElementById('root')
 );
