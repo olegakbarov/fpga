@@ -1,0 +1,149 @@
+package db
+
+import (
+	"database/sql"
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"log"
+
+	"github.com/fogcreek/mini"
+)
+
+func fatal(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func getConfig() string {
+	cfg, err := mini.LoadConfiguration(".config")
+	fatal(err)
+
+	info := fmt.Sprintf("host=%s port=%s dbname=%s "+
+		"sslmode=%s user=%s password=%s ",
+		cfg.String("host", "127.0.0.1"),
+		cfg.String("port", "5432"),
+		cfg.String("dbname", ""),
+		cfg.String("sslmode", "disable"),
+		cfg.String("user", ""),
+		cfg.String("pass", ""))
+
+	return info
+}
+
+var db *sql.DB
+
+func InitDB() {
+	var err error
+	db, err = sql.Open("postgres", getConfig())
+
+	if err != nil {
+		fatal(err)
+	}
+}
+
+func (p PropertyMap) Value() (driver.Value, error) {
+	j, err := json.Marshal(p)
+	return j, err
+}
+
+func (p *PropertyMap) Scan(src interface{}) error {
+	source, ok := src.([]byte)
+	if !ok {
+		return errors.New("Type assertion .([]byte) failed.")
+	}
+
+	var i interface{}
+	err := json.Unmarshal(source, &i)
+	if err != nil {
+		return err
+	}
+
+	*p, ok = i.(map[string]interface{})
+	if !ok {
+		return errors.New("Type assertion .(map[string]interface{}) failed.")
+	}
+
+	return nil
+}
+
+func Read() ([]Conf, error) {
+	var rows *sql.Rows
+	var err error
+
+	rows, err = db.Query("SELECT * FROM confs ORDER BY id")
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var rs = make([]Conf, 0)
+
+	var rec Conf
+	for rows.Next() {
+		if err = rows.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Adress, &rec.Category, &rec.Min_price, &rec.Max_price, &rec.Facebook_account, &rec.Youtube_account, &rec.Twitter_account, &rec.Tickets_available, &rec.Discount_program, &rec.Details, &rec.Speakers, &rec.Sponsors, &rec.Verified, &rec.Created_at, &rec.Updated_at); err != nil {
+			fmt.Printf("%v", err)
+			return nil, err
+		}
+		rs = append(rs, rec)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return rs, nil
+}
+
+func ReadOne(id string) (Conf, error) {
+	var rec Conf
+	row := db.QueryRow("SELECT * FROM confs WHERE id=$1 ORDER BY id", id)
+	return rec, row.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Adress, &rec.Category, &rec.Min_price, &rec.Max_price, &rec.Facebook_account, &rec.Youtube_account, &rec.Twitter_account, &rec.Tickets_available, &rec.Discount_program, &rec.Details, &rec.Speakers, &rec.Sponsors, &rec.Verified, &rec.Created_at, &rec.Updated_at)
+}
+
+// func Read(str string) ([]Record, error) {
+// 	var rows *sql.Rows
+// 	var err error
+// 	if str != "" {
+// 		rows, err = db.Query("SELECT * FROM itmes WHERE title LIKE $1 ORDER BY id",
+// 			"%"+str+"%")
+// 	} else {
+// 		rows, err = db.Query("SELECT * FROM items ORDER BY id")
+// 	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer rows.Close()
+//
+// 	var rs = make([]Record, 0)
+// 	var rec Record
+// 	for rows.Next() {
+// 		if err = rows.Scan(&rec.Id, &rec.Title); err != nil {
+// 			return nil, err
+// 		}
+// 		rs = append(rs, rec)
+// 	}
+// 	if err = rows.Err(); err != nil {
+// 		return nil, err
+// 	}
+// 	return rs, nil
+// }
+
+// func Insert(item Conf) (sql.Result, error) {
+// 	return db.Exec("INSERT INTO confs VALUES (default, $1)",
+// 		item)
+//
+// 	return json.NewEncoder(w).Encode(todos)
+// }
+
+// func Remove(id int) (sql.Result, error) {
+// 	return db.Exec("DELETE FROM items WHERE id=$1", id)
+// }
+//
+// func Update(id int, title string) (sql.Result, error) {
+// 	return db.Exec("UPDATE phonebook SET title = $1, WHERE id=$2",
+// 		title, id)
+// }
