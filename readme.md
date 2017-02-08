@@ -30,3 +30,28 @@ https://github.com/jmoiron/sqlx
 
 // LISTEN TO EVENTS
 // http://coussej.github.io/2015/09/15/Listening-to-generic-JSON-notifications-from-PostgreSQL-in-Go/
+
+
+### For curl'ing
+
+title "JavaFuck2018"            
+added_by "yyQ14wjI"
+start_date "2017-10-19 11:00:00+03"
+end_date "2017-10-19 11:00:00+03"
+description "kool yo"
+picture "pic url"
+country "USA"
+city "Los-Angeles"    
+adress "Hollywood, 1"
+category "big data"
+min_price 100
+max_price 1000    
+facebook_account "na"
+youtube_account "na"
+twitter_account  "na"
+tickets_available TRUE
+discount_program FALSE
+details "vse ok"
+speakers "{'speakers': ['bred fizpatrik']}"
+sponsors "{'sponsors': ['google']}"
+verified  TRUE

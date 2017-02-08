@@ -42,6 +42,8 @@ func InitDB() {
 	if err != nil {
 		fatal(err)
 	}
+
+	//defer db.Close()
 }
 
 func (p PropertyMap) Value() (driver.Value, error) {
@@ -85,14 +87,16 @@ func Read() ([]Conf, error) {
 
 	var rec Conf
 	for rows.Next() {
-		if err = rows.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Adress, &rec.Category, &rec.Min_price, &rec.Max_price, &rec.Facebook_account, &rec.Youtube_account, &rec.Twitter_account, &rec.Tickets_available, &rec.Discount_program, &rec.Details, &rec.Speakers, &rec.Sponsors, &rec.Verified, &rec.Created_at, &rec.Updated_at); err != nil {
-			fmt.Printf("%v", err)
-			return nil, err
+		if err := rows.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Address, &rec.Category,
+			//&rec.Min_price, &rec.Max_price,
+			//&rec.Facebook_account,
+			//&rec.Youtube_account,
+			//&rec.Twitter_account,
+			&rec.Tickets_available, &rec.Discount_program, &rec.Details, &rec.Speakers, &rec.Sponsors, &rec.Verified, &rec.Deleted, &rec.Created_at, &rec.Updated_at); err != nil {
+			fmt.Printf("%v\n", err)
+			//return nil, err
 		}
 		rs = append(rs, rec)
-	}
-	if err = rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return rs, nil
@@ -101,48 +105,28 @@ func Read() ([]Conf, error) {
 func ReadOne(id string) (Conf, error) {
 	var rec Conf
 	row := db.QueryRow("SELECT * FROM confs WHERE id=$1 ORDER BY id", id)
-	return rec, row.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Adress, &rec.Category, &rec.Min_price, &rec.Max_price, &rec.Facebook_account, &rec.Youtube_account, &rec.Twitter_account, &rec.Tickets_available, &rec.Discount_program, &rec.Details, &rec.Speakers, &rec.Sponsors, &rec.Verified, &rec.Created_at, &rec.Updated_at)
+
+	fmt.Printf("%v", row)
+
+	return rec, row.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Address, &rec.Category,
+		//&rec.Min_price,
+		//&rec.Max_price,
+		//&rec.Facebook_account,
+		//&rec.Youtube_account,
+		//&rec.Twitter_account,
+		&rec.Tickets_available, &rec.Discount_program, &rec.Details, &rec.Speakers, &rec.Sponsors, &rec.Verified, &rec.Deleted, &rec.Created_at, &rec.Updated_at)
 }
 
-// func Read(str string) ([]Record, error) {
-// 	var rows *sql.Rows
-// 	var err error
-// 	if str != "" {
-// 		rows, err = db.Query("SELECT * FROM itmes WHERE title LIKE $1 ORDER BY id",
-// 			"%"+str+"%")
-// 	} else {
-// 		rows, err = db.Query("SELECT * FROM items ORDER BY id")
-// 	}
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer rows.Close()
-//
-// 	var rs = make([]Record, 0)
-// 	var rec Record
-// 	for rows.Next() {
-// 		if err = rows.Scan(&rec.Id, &rec.Title); err != nil {
-// 			return nil, err
-// 		}
-// 		rs = append(rs, rec)
-// 	}
-// 	if err = rows.Err(); err != nil {
-// 		return nil, err
-// 	}
-// 	return rs, nil
-// }
+func Remove(id string) (sql.Result, error) {
+	return db.Exec("DELETE FROM confs WHERE id=$1", id)
+}
 
-// func Insert(item Conf) (sql.Result, error) {
-// 	return db.Exec("INSERT INTO confs VALUES (default, $1)",
-// 		item)
-//
-// 	return json.NewEncoder(w).Encode(todos)
-// }
+func Insert(item Conf) (sql.Result, error) {
+	// todo insert one by one??
+	return db.Exec("INSERT INT confs VALUES (default, $1)",
+		item)
+}
 
-// func Remove(id int) (sql.Result, error) {
-// 	return db.Exec("DELETE FROM items WHERE id=$1", id)
-// }
-//
 // func Update(id int, title string) (sql.Result, error) {
 // 	return db.Exec("UPDATE phonebook SET title = $1, WHERE id=$2",
 // 		title, id)
