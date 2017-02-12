@@ -43,7 +43,7 @@ func InitDB() {
 		fatal(err)
 	}
 
-	//defer db.Close()
+	// defer db.Close()
 }
 
 func (p PropertyMap) Value() (driver.Value, error) {
@@ -76,7 +76,6 @@ func Read() ([]Conf, error) {
 	var err error
 
 	rows, err = db.Query("SELECT * FROM confs ORDER BY id")
-
 	if err != nil {
 		return nil, err
 	}
@@ -87,14 +86,32 @@ func Read() ([]Conf, error) {
 
 	var rec Conf
 	for rows.Next() {
-		if err := rows.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Address, &rec.Category,
-			//&rec.Min_price, &rec.Max_price,
-			//&rec.Facebook_account,
-			//&rec.Youtube_account,
-			//&rec.Twitter_account,
-			&rec.Tickets_available, &rec.Discount_program, &rec.Details, &rec.Speakers, &rec.Sponsors, &rec.Verified, &rec.Deleted, &rec.Created_at, &rec.Updated_at); err != nil {
+		if err := rows.Scan(
+			&rec.Id,
+			&rec.Title,
+			&rec.Added_by,
+			&rec.Start_date,
+			&rec.End_date,
+			&rec.Description,
+			&rec.Picture,
+			&rec.Country,
+			&rec.City,
+			&rec.Address,
+			&rec.Category,
+			&rec.Tickets_available,
+			&rec.Discount_program,
+			&rec.Min_price,
+			&rec.Max_price,
+			&rec.Facebook_account,
+			&rec.Youtube_account,
+			&rec.Twitter_account,
+			&rec.Details, &rec.Speakers,
+			&rec.Sponsors, &rec.Verified,
+			&rec.Deleted,
+			&rec.Created_at,
+			&rec.Updated_at); err != nil {
 			fmt.Printf("%v\n", err)
-			//return nil, err
+			return nil, err
 		}
 		rs = append(rs, rec)
 	}
@@ -108,9 +125,7 @@ func ReadOne(id string) (Conf, error) {
 
 	fmt.Printf("%v", row)
 
-	return rec, row.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Address, &rec.Category,
-		//&rec.Min_price,
-		//&rec.Max_price,
+	return rec, row.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Address, &rec.Category, &rec.Min_price, &rec.Max_price,
 		//&rec.Facebook_account,
 		//&rec.Youtube_account,
 		//&rec.Twitter_account,
