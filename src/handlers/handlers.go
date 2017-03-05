@@ -17,6 +17,10 @@ type Envelope struct {
 	Data   interface{} `json:"data"`
 }
 
+func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	fmt.Fprint(w, "Welcome!\n")
+}
+
 func GetAllConfs(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	ctx := log.WithFields(log.Fields{
 		"file": "handlers.go",

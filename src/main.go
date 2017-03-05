@@ -12,14 +12,15 @@ import (
 
 func main() {
 	db.InitDB()
-	// defer db.Close()
 
 	router := httprouter.New()
+
+	router.GET("/", handlers.Index)
 	router.GET("/api/v1/conf", handlers.GetAllConfs)
 	router.GET("/api/v1/conf/:id", handlers.GetById)
 	router.POST("/api/v1/conf", handlers.AddConf)
 	// router.PUT("/api/v1/conf/:id", handlers.UpdateConf)
 	router.DELETE("/api/v1/conf/:id", handlers.DeleteConfById)
 
-	log.Fatal(http.ListenAndServe("localhost:1337", router))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

@@ -6,20 +6,22 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 
+	"github.com/apex/log"
 	"github.com/fogcreek/mini"
 )
 
-func fatal(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func getConfig() string {
+	ctx := log.WithFields(log.Fields{
+		"file": "db.go",
+		"func": "Accessing db error",
+	})
+
 	cfg, err := mini.LoadConfiguration(".config")
-	fatal(err)
+
+	if err != nil {
+		ctx.WithError(err).Error("Error loading configuration")
+	}
 
 	info := fmt.Sprintf("host=%s port=%s dbname=%s "+
 		"sslmode=%s user=%s password=%s ",
@@ -30,6 +32,9 @@ func getConfig() string {
 		cfg.String("user", ""),
 		cfg.String("pass", ""))
 
+	ctx.Info("Config:")
+	ctx.Info(info)
+
 	return info
 }
 
@@ -37,10 +42,15 @@ var db *sql.DB
 
 func InitDB() {
 	var err error
+	ctx := log.WithFields(log.Fields{
+		"file": "db.go",
+		"func": "InitDB()",
+	})
+
 	db, err = sql.Open("postgres", getConfig())
 
 	if err != nil {
-		fatal(err)
+		ctx.WithError(err).Error("Error connecting to database")
 	}
 
 	// defer db.Close()

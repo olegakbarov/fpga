@@ -1,52 +1,52 @@
 version: '2'
 
-services:
+volumes:
+  pgdb:
+    driver: local
 
-  app:
+services:
+  postgresd:
+    image: postgres:9.6
+    ports:
+        - "127.0.0.1:5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pgdb:/root
+
+  confsio:
     build:
       context: .
       dockerfile: Dockerfile
     links:
       - postgresd:postgresd
-    volumes:
-      - appvolume:/root
     ports:
-      - "1337:1337"
-    environment:
-      - LOG_LEVEL=${LOG_LEVEL}
-      - SYSTEM_SECRET=${SYSTEM_SECRET}
-      - CONSENT_URL=http://${DOCKER_IP}:3000/consent
-      - DATABASE_URL=postgres://hydra:secret@postgresd:5432/hydra?sslmode=disable
-      - FORCE_ROOT_CLIENT_CREDENTIALS=admin:demo-password
-      - ACCESS_TOKEN_LIFESPAN=${ACCESS_TOKEN_LIFESPAN}
-      - ID_TOKEN_LIFESPAN=${ID_TOKEN_LIFESPAN}
-      - AUTHORIZE_CODE_LIFESPAN=${AUTHORIZE_CODE_LIFESPAN}
+      - "8080:8080"
+    # environment:
+    #   - LOG_LEVEL=${LOG_LEVEL}
+    #   - SYSTEM_SECRET=${SYSTEM_SECRET}
+    #   - CONSENT_URL=http://${DOCKER_IP}:3000/consent
+    #   - DATABASE_URL=postgres://hydra:secret@postgresd:5432/hydra?sslmode=disable
+    #   - FORCE_ROOT_CLIENT_CREDENTIALS=admin:demo-password
+    #   - ACCESS_TOKEN_LIFESPAN=${ACCESS_TOKEN_LIFESPAN}
+    #   - ID_TOKEN_LIFESPAN=${ID_TOKEN_LIFESPAN}
+    #   - AUTHORIZE_CODE_LIFESPAN=${AUTHORIZE_CODE_LIFESPAN}
     restart: unless-stopped
 
   proxy:
     image: nginx:latest
     ports:
-        - "1338:80" # host:container
+        - "9999:80" # host:container
         - "443:443"
     volumes:
         - ./nginx.conf:/etc/nginx/nginx.conf:ro
         # connect host's ./nginx.conf with container's nginx.conf
         # :ro == read only perms in container
     links:
-        - app # [other container]:[alias in this container]
+        - confsio:app # [other container]:[alias in this container]
           # creates environment variables in proxy container
           # with ip and port info for go container
           # also creates entries in /etc/hosts with ip info
 
-  postgresd:
-    image: postgres:9.6
-    ports:
-      - "5555:5432" # host:container
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-
-volumes:
-  appvolume:
-    driver: local
