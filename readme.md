@@ -5,6 +5,10 @@ Start & stop manually:
 pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 
 pg_ctl -D /usr/local/var/postgres stop -s -m fast
+
+or
+
+brew services start postgresql
 ```
 
 ```
@@ -34,18 +38,18 @@ https://github.com/jmoiron/sqlx
 
 ### For curl'ing
 
-title "JavaFuck2018"            
+title "JavaFuck2018"
 added_by "yyQ14wjI"
 start_date "2017-10-19 11:00:00+03"
 end_date "2017-10-19 11:00:00+03"
 description "kool yo"
 picture "pic url"
 country "USA"
-city "Los-Angeles"    
+city "Los-Angeles"
 adress "Hollywood, 1"
 category "big data"
 min_price 100
-max_price 1000    
+max_price 1000
 facebook_account "na"
 youtube_account "na"
 twitter_account  "na"

@@ -6,8 +6,8 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
-	"github.com/olegakbarov/api.confio/db"
-	"github.com/olegakbarov/api.confio/handlers"
+	"github.com/olegakbarov/api.confsio/db"
+	"github.com/olegakbarov/api.confsio/handlers"
 )
 
 func main() {
