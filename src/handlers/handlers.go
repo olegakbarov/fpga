@@ -9,7 +9,7 @@ import (
 
 	"github.com/apex/log"
 	"github.com/julienschmidt/httprouter"
-	"github.com/olegakbarov/api.confsio/db"
+	"github.com/olegakbarov/api.confsio/src/db"
 )
 
 type Envelope struct {
