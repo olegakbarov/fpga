@@ -1,38 +1,39 @@
 version: '2'
 
 volumes:
-  pgdb:
-    driver: local
+  postgresql:
+  postgresql_data:
 
 services:
   postgresd:
-    image: postgres:9.6
-    ports:
-        - "127.0.0.1:5432:5432"
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    # ports:
+    #     - "5430:5432"
+    restart: always
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
     volumes:
-      - pgdb:/root
+        - postgresql:/var/lib/postgresql
+        - postgresql_data:/var/lib/postgresql/data
 
   confsio:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.app
     links:
       - postgresd:postgresd
     ports:
       - "8080:8080"
-    # environment:
-    #   - LOG_LEVEL=${LOG_LEVEL}
-    #   - SYSTEM_SECRET=${SYSTEM_SECRET}
-    #   - CONSENT_URL=http://${DOCKER_IP}:3000/consent
-    #   - DATABASE_URL=postgres://hydra:secret@postgresd:5432/hydra?sslmode=disable
-    #   - FORCE_ROOT_CLIENT_CREDENTIALS=admin:demo-password
-    #   - ACCESS_TOKEN_LIFESPAN=${ACCESS_TOKEN_LIFESPAN}
-    #   - ID_TOKEN_LIFESPAN=${ID_TOKEN_LIFESPAN}
-    #   - AUTHORIZE_CODE_LIFESPAN=${AUTHORIZE_CODE_LIFESPAN}
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
     restart: unless-stopped
 
   proxy:
@@ -45,7 +46,8 @@ services:
         # connect host's ./nginx.conf with container's nginx.conf
         # :ro == read only perms in container
     links:
-        - confsio:app # [other container]:[alias in this container]
+        - confsio:app
+          # [other container]:[alias in this container]
           # creates environment variables in proxy container
           # with ip and port info for go container
           # also creates entries in /etc/hosts with ip info
