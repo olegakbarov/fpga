@@ -6,8 +6,8 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
-	"github.com/olegakbarov/api.confsio/src/db"
-	"github.com/olegakbarov/api.confsio/src/handlers"
+	"github.com/olegakbarov/io.confs.api/src/db"
+	"github.com/olegakbarov/io.confs.api/src/handlers"
 )
 
 func main() {
@@ -16,11 +16,11 @@ func main() {
 	router := httprouter.New()
 
 	router.GET("/", handlers.Index)
-	router.GET("/api/v1/conf", handlers.GetAllConfs)
+	router.GET("/api/v1/conf", handlers.GetAll)
 	router.GET("/api/v1/conf/:id", handlers.GetById)
-	router.POST("/api/v1/conf", handlers.AddConf)
+	router.POST("/api/v1/conf", handlers.Add)
 	// router.PUT("/api/v1/conf/:id", handlers.UpdateConf)
-	router.DELETE("/api/v1/conf/:id", handlers.DeleteConfById)
+	router.DELETE("/api/v1/conf/:id", handlers.DeleteOne)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

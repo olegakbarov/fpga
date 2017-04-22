@@ -6,34 +6,21 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-
-	"github.com/apex/log"
-	"github.com/fogcreek/mini"
+	"log"
+	"os"
 )
 
 func getConfig() string {
-	ctx := log.WithFields(log.Fields{
-		"file": "db.go",
-		"func": "Accessing db error",
-	})
-
-	cfg, err := mini.LoadConfiguration(".config")
-
-	if err != nil {
-		ctx.WithError(err).Error("Error loading configuration")
-	}
-
 	info := fmt.Sprintf("host=%s port=%s dbname=%s "+
 		"sslmode=%s user=%s password=%s ",
-		cfg.String("host", "127.0.0.1"),
-		cfg.String("port", "5432"),
-		cfg.String("dbname", ""),
-		cfg.String("sslmode", "disable"),
-		cfg.String("user", ""),
-		cfg.String("pass", ""))
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
+		"disable",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASS"))
 
-	ctx.Info("Config:")
-	ctx.Info(info)
+	log.Printf("Config looks like this: %s", info)
 
 	return info
 }
@@ -42,18 +29,16 @@ var db *sql.DB
 
 func InitDB() {
 	var err error
-	ctx := log.WithFields(log.Fields{
-		"file": "db.go",
-		"func": "InitDB()",
-	})
+	var rows *sql.Rows
 
 	db, err = sql.Open("postgres", getConfig())
 
 	if err != nil {
-		ctx.WithError(err).Error("Error connecting to database")
+		log.Fatal("Error: The data source arguments are not valid - " + err.Error())
 	}
 
-	// defer db.Close()
+	rows, err = db.Query("SELECT * FROM confs ORDER BY id")
+	log.Printf("%v", rows)
 }
 
 func (p PropertyMap) Value() (driver.Value, error) {
@@ -115,8 +100,10 @@ func Read() ([]Conf, error) {
 			&rec.Facebook_account,
 			&rec.Youtube_account,
 			&rec.Twitter_account,
-			&rec.Details, &rec.Speakers,
-			&rec.Sponsors, &rec.Verified,
+			&rec.Details,
+			&rec.Speakers,
+			&rec.Sponsors,
+			&rec.Verified,
 			&rec.Deleted,
 			&rec.Created_at,
 			&rec.Updated_at); err != nil {
@@ -135,11 +122,33 @@ func ReadOne(id string) (Conf, error) {
 
 	fmt.Printf("%v", row)
 
-	return rec, row.Scan(&rec.Id, &rec.Title, &rec.Added_by, &rec.Start_date, &rec.End_date, &rec.Description, &rec.Picture, &rec.Country, &rec.City, &rec.Address, &rec.Category, &rec.Min_price, &rec.Max_price,
-		//&rec.Facebook_account,
-		//&rec.Youtube_account,
-		//&rec.Twitter_account,
-		&rec.Tickets_available, &rec.Discount_program, &rec.Details, &rec.Speakers, &rec.Sponsors, &rec.Verified, &rec.Deleted, &rec.Created_at, &rec.Updated_at)
+	return rec, row.Scan(
+		&rec.Id,
+		&rec.Title,
+		&rec.Added_by,
+		&rec.Start_date,
+		&rec.End_date,
+		&rec.Description,
+		&rec.Picture,
+		&rec.Country,
+		&rec.City,
+		&rec.Address,
+		&rec.Category,
+		&rec.Tickets_available,
+		&rec.Discount_program,
+		&rec.Min_price,
+		&rec.Max_price,
+		&rec.Facebook_account,
+		&rec.Youtube_account,
+		&rec.Twitter_account,
+		&rec.Details,
+		&rec.Speakers,
+		&rec.Sponsors,
+		&rec.Verified,
+		&rec.Deleted,
+		&rec.Created_at,
+		&rec.Updated_at,
+	)
 }
 
 func Remove(id string) (sql.Result, error) {
@@ -148,11 +157,5 @@ func Remove(id string) (sql.Result, error) {
 
 func Insert(item Conf) (sql.Result, error) {
 	// todo insert one by one??
-	return db.Exec("INSERT INT confs VALUES (default, $1)",
-		item)
+	return db.Exec("INSERT INT confs VALUES (default, $1)", item)
 }
-
-// func Update(id int, title string) (sql.Result, error) {
-// 	return db.Exec("UPDATE phonebook SET title = $1, WHERE id=$2",
-// 		title, id)
-// }

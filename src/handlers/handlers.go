@@ -3,13 +3,12 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
-	"github.com/apex/log"
 	"github.com/julienschmidt/httprouter"
-	"github.com/olegakbarov/api.confsio/src/db"
+	"github.com/olegakbarov/io.confs.api/src/db"
 )
 
 type Envelope struct {
@@ -21,16 +20,13 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!\n")
 }
 
-func GetAllConfs(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	ctx := log.WithFields(log.Fields{
-		"file": "handlers.go",
-		"func": "GetAllConfs",
-	})
-
+func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	recs, err := db.Read()
+
+	log.Printf("DB rows: %v", recs)
+
 	if err != nil {
-		err := errors.New("database error")
-		ctx.WithError(err).Error("Check db handler")
+		log.Fatal("Error quering the db- " + err.Error())
 		w.WriteHeader(500)
 		return
 	}
@@ -43,25 +39,19 @@ func GetAllConfs(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	data, err := json.Marshal(res)
 
 	if err != nil {
-		err := errors.New("err")
-		ctx.WithError(err).Error("Failed marshaling json")
+		log.Fatal("Failed marshaling json" + err.Error())
 		w.WriteHeader(500)
 		return
 	}
 
-	ctx.Info("Sending response..")
+	log.Println("Sending response..")
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(data)
-	ctx.Info("Done.")
+	log.Println("Done.")
 }
 
 func GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	ctx := log.WithFields(log.Fields{
-		"file": "handlers.go",
-		"func": "GetById",
-	})
-
 	id := ps.ByName("id")
 	fmt.Printf("%s\n", id)
 
@@ -73,50 +63,38 @@ func GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			return
 		}
 
-		err := errors.New("err")
-		ctx.WithError(err).Error("Sql error")
-		w.WriteHeader(500)
+		// handle errors
+		// log.Fatal("Failed reading one row" + err.Error())
+
 		return
 	}
 
 	data, err := json.Marshal(rec)
 	if err != nil {
-		err := errors.New("err")
-		ctx.WithError(err).Error("Failed marshaling json")
+		//  log errors
 		w.WriteHeader(500)
 		return
 	}
 
-	ctx.Info("Sending response..")
+	log.Println("Sending response..")
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Write(data)
-	ctx.Info("Done.")
+	log.Println("Done.")
 }
 
-func DeleteConfById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	ctx := log.WithFields(log.Fields{
-		"file": "handlers.go",
-		"func": "DeleteConfById",
-	})
-
+func DeleteOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 	fmt.Printf("%s\n", id)
 
 	if _, err := db.Remove(id); err != nil {
-		err := errors.New("err")
-		ctx.WithError(err).Error("Error deleting msg")
+		log.Fatal("Failed deleting record" + err.Error())
 		w.WriteHeader(500)
 	}
 
 	w.WriteHeader(204)
 }
 
-func AddConf(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	ctx := log.WithFields(log.Fields{
-		"file": "handlers.go",
-		"func": "AddConf",
-	})
-
+func Add(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	decoder := json.NewDecoder(r.Body)
 	var rec db.Conf
 
@@ -124,39 +102,13 @@ func AddConf(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Printf("%s\n", &rec)
 
 	if err != nil {
-		ctx.WithError(err).Error("Error marshaling json")
 		w.WriteHeader(400)
 		return
 	}
 	if _, err := db.Insert(rec); err != nil {
-		ctx.WithError(err).Error("Error insering into db")
 		w.WriteHeader(500)
 		return
 	}
 
 	w.WriteHeader(201)
 }
-
-//func updaterecord(w http.responsewriter, r *http.request, ps httprouter.params) {
-//id, ok := getid(w, ps)
-//if !ok {
-//return
-//}
-//var rec record
-//err := json.newdecoder(r.body).decode(&rec)
-//if err != nil || rec.title == "" {
-//w.writeheader(400)
-//return
-//}
-//res, err := db.update(id, rec.title)
-//if err != nil {
-//w.writeheader(500)
-//return
-//}
-//n, _ := res.rowsaffected()
-//if n == 0 {
-//w.writeheader(404)
-//return
-//}
-//w.writeheader(204)
-//}
