@@ -32,7 +32,7 @@ func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	res := Envelope{
-		Result: "Success",
+		Result: "OK",
 		Data:   recs,
 	}
 

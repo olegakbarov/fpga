@@ -11,8 +11,7 @@ import (
 )
 
 func getConfig() string {
-	info := fmt.Sprintf("host=%s port=%s dbname=%s "+
-		"sslmode=%s user=%s password=%s ",
+	info := fmt.Sprintf("host=%s port=%s dbname=%s sslmode=%s user=%s password=%s ",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_NAME"),
@@ -35,6 +34,10 @@ func InitDB() {
 
 	if err != nil {
 		log.Fatal("Error: The data source arguments are not valid - " + err.Error())
+	}
+
+	if err = db.Ping(); err != nil {
+		log.Fatal(err)
 	}
 
 	rows, err = db.Query("SELECT * FROM confs ORDER BY id")
@@ -157,5 +160,5 @@ func Remove(id string) (sql.Result, error) {
 
 func Insert(item Conf) (sql.Result, error) {
 	// todo insert one by one??
-	return db.Exec("INSERT INT confs VALUES (default, $1)", item)
+	return db.Exec("INSERT INTO confs VALUES (default, $1)", item)
 }
