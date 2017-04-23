@@ -19,7 +19,7 @@ func main() {
 	router.GET("/api/v1/conf", handlers.GetAll)
 	router.GET("/api/v1/conf/:id", handlers.GetById)
 	router.POST("/api/v1/conf", handlers.Add)
-	// router.PUT("/api/v1/conf/:id", handlers.UpdateConf)
+	router.PUT("/api/v1/conf/:id", handlers.NotImplemented)
 	router.DELETE("/api/v1/conf/:id", handlers.DeleteOne)
 
 	log.Fatal(http.ListenAndServe(":8080", router))

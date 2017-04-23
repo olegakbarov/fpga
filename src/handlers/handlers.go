@@ -112,3 +112,7 @@ func Add(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	w.WriteHeader(201)
 }
+
+func NotImplemented(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Write([]byte("Not Implemented"))
+}
