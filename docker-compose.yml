@@ -26,8 +26,6 @@ services:
       dockerfile: Dockerfile.app
     links:
       - postgresd:postgresd
-    ports:
-      - "8080:8080"
     environment:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
@@ -51,4 +49,3 @@ services:
           # creates environment variables in proxy container
           # with ip and port info for go container
           # also creates entries in /etc/hosts with ip info
-
