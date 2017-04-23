@@ -35,23 +35,3 @@ type Conf struct {
 	Created_at        time.Time   `json:"created_at"`
 	Updated_at        time.Time   `json:"updated_at"`
 }
-
-// func (c *Conf) MarshalJSON() ([]byte, error) {
-// 	middleNameValue, err := u.MiddleName.Value()
-//
-// 	if err != nil {
-// 		return nil, err
-// 	}
-//
-// 	var middleNameJsonString string
-//
-// 	if middleNameValue == nil {
-// 		middleNameJsonString = "null"
-// 	} else {
-// 		middleNameJsonString = fmt.Sprintf("\"%s\"", titleValue)
-// 	}
-//
-// 	jsonString := fmt.Sprintf("{\"id\":%d,\"first_name\":%s,\"middle_name\":%s,\"last_name\":%s}", u.Id, u.FirstName, middleNameJsonString, u.LastName)
-//
-// 	return []byte(jsonString), nil
-// }
