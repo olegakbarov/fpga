@@ -1,6 +1,6 @@
 ### io.confs.api
 
-Dockerized Go application with Postgres database, proxied by nginx
+Dockerized API service
 
 ### Prerequisites
 
@@ -11,22 +11,32 @@ Dockerized Go application with Postgres database, proxied by nginx
 
 ...
 
-This results running server on port `9999`
+This results running nginx-server on port `9999` proxying requests to App
 
+
+### Develop
+
+TODO
 
 ### Linking containers caveats
-
-Creates environment variables in proxy container, with ip and port info for go container, also creates entries in /etc/hosts with ip info [other container]:[alias in this container]
 
 ```yaml
 links:
   - confsio:app
 ```
-### Develop
 
-Recompile Go app `run build.sh`
+This creates environment variables in proxy container, with ip and port info for go container, also creates entries in /etc/hosts with ip info [other container]:[alias in this container]
 
-Build Docker image `docker build -t confsio_img .`
+```yaml
+volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+```
+
+- Conntect host's `./nginx.conf` with container's `nginx.conf`
+
+- `:ro` means read only perms in container
+
+### Docker tips
 
 Run Docker image with port-forwarding: `docker run -it -p 8080:8080 confsio_img`
 
