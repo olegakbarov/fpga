@@ -1,4 +1,4 @@
-### What
+### io.confs.api
 
 Dockerized Go application with Postgres database, proxied by nginx
 
@@ -9,9 +9,18 @@ Dockerized Go application with Postgres database, proxied by nginx
 
 ### Start
 
-```
-$ docker-compose build
-$ docker-compose up
+...
+
+This results running server on port `9999`
+
+
+### Linking containers caveats
+
+Creates environment variables in proxy container, with ip and port info for go container, also creates entries in /etc/hosts with ip info [other container]:[alias in this container]
+
+```yaml
+links:
+  - confsio:app
 ```
 ### Develop
 
@@ -23,8 +32,4 @@ Run Docker image with port-forwarding: `docker run -it -p 8080:8080 confsio_img`
 
 Inspect container's ENV variables: `docker inspect -f "{{ .Config.Env }}" container-id`
 
-Copy file from container to host:
-
-```
-docker cp <containerId>:/file/path/within/container /host/path/target
-```
+Copy file from container to host: `docker cp <containerId>:/file/path/within/container /host/path/target`
