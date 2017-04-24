@@ -63,15 +63,19 @@ func GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			return
 		}
 
-		// handle errors
-		// log.Fatal("Failed reading one row" + err.Error())
-
+		log.Fatal("Failed reading row" + err.Error())
 		return
 	}
 
-	data, err := json.Marshal(rec)
+	res := Envelope{
+		Result: "OK",
+		Data:   rec,
+	}
+
+	data, err := json.Marshal(res)
 	if err != nil {
 		//  log errors
+		log.Fatal(err)
 		w.WriteHeader(500)
 		return
 	}

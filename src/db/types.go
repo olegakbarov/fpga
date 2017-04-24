@@ -35,3 +35,14 @@ type Conf struct {
 	Created_at        time.Time   `json:"created_at"`
 	Updated_at        time.Time   `json:"updated_at"`
 }
+
+type User struct {
+      FirstName 	string 		`json:"first_name"`,
+      LastName 		string 		`json:"last_name"`,
+      Locale 		null.String `json:"locale"`,
+	  City 			null.String `json:"city"`
+	  Userpic 		null.String `json:"userpic"`
+      Email 		string 		`json:"email"`,
+      Verified 		bool 		`json:"verified"`,
+      Settings 		PropertyMap `json:"settings"`
+}
