@@ -19,7 +19,7 @@ func GetToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	// hash, _ := HashPassword(password) // ignore error for the sake of simplicity
+	// hash, err := HashPassword(password)
 	// match := CheckPasswordHash(password, hash)
 
 	res := Envelope{

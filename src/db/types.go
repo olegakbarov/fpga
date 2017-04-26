@@ -28,8 +28,6 @@ type Conf struct {
 	Youtube_account   null.String `json:"youtube_account"`
 	Twitter_account   null.String `json:"twitter_account"`
 	Details           PropertyMap `json:"details"`
-	Speakers          PropertyMap `json:"speakers"`
-	Sponsors          PropertyMap `json:"sponsors"`
 	Verified          bool        `json:"verified"`
 	Deleted           bool        `json:"deleted"`
 	Created_at        time.Time   `json:"created_at"`
@@ -37,12 +35,12 @@ type Conf struct {
 }
 
 type User struct {
-      FirstName 	string 		`json:"first_name"`,
-      LastName 		string 		`json:"last_name"`,
-      Locale 		null.String `json:"locale"`,
-	  City 			null.String `json:"city"`
-	  Userpic 		null.String `json:"userpic"`
-      Email 		string 		`json:"email"`,
-      Verified 		bool 		`json:"verified"`,
-      Settings 		PropertyMap `json:"settings"`
+	FirstName string      `json:"first_name"`
+	LastName  string      `json:"last_name"`
+	Locale    null.String `json:"locale"`
+	City      null.String `json:"city"`
+	Userpic   null.String `json:"userpic"`
+	Email     string      `json:"email"`
+	Verified  bool        `json:"verified"`
+	Settings  PropertyMap `json:"settings"`
 }
