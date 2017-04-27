@@ -39,9 +39,6 @@ func InitDB() {
 	if err = db.Ping(); err != nil {
 		log.Fatal(err)
 	}
-
-	rows, err = db.Query("SELECT * FROM confs ORDER BY id")
-	log.Printf("%v", rows)
 }
 
 func (p PropertyMap) Value() (driver.Value, error) {
