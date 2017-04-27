@@ -24,14 +24,23 @@ type Conf struct {
 	Discount_program  null.Bool   `json:"discount_program"`
 	Min_price         null.Int    `json:"min_price"`
 	Max_price         null.Int    `json:"max_price"`
-	Facebook_account  null.String `json:"facebook_account"`
-	Youtube_account   null.String `json:"youtube_account"`
-	Twitter_account   null.String `json:"twitter_account"`
+	Facebook          null.String `json:"facebook"`
+	Youtube           null.String `json:"youtube"`
+	Twitter           null.String `json:"twitter"`
 	Details           PropertyMap `json:"details"`
-	Verified          bool        `json:"verified"`
-	Deleted           bool        `json:"deleted"`
-	Created_at        time.Time   `json:"created_at"`
-	Updated_at        time.Time   `json:"updated_at"`
+}
+
+// This stored in database and have private fields
+type RawConf struct {
+	Conf
+	Verified   bool      `json:"verified"`
+	Deleted    bool      `json:"deleted"`
+	Created_at time.Time `json:"created_at"`
+	Updated_at time.Time `json:"updated_at"`
+}
+
+func (r RawConf) PublicFields() Conf {
+	return r.Conf
 }
 
 type User struct {

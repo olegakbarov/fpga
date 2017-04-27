@@ -80,9 +80,9 @@ func Read() ([]Conf, error) {
 
 	defer rows.Close()
 
-	var rs = make([]Conf, 0)
+	var rs = make([]RawConf, 0)
 
-	var rec Conf
+	var rec RawConf
 	for rows.Next() {
 		if err := rows.Scan(
 			&rec.Id,
@@ -100,9 +100,9 @@ func Read() ([]Conf, error) {
 			&rec.Discount_program,
 			&rec.Min_price,
 			&rec.Max_price,
-			&rec.Facebook_account,
-			&rec.Youtube_account,
-			&rec.Twitter_account,
+			&rec.Facebook,
+			&rec.Youtube,
+			&rec.Twitter,
 			&rec.Details,
 			&rec.Verified,
 			&rec.Deleted,
@@ -114,11 +114,17 @@ func Read() ([]Conf, error) {
 		rs = append(rs, rec)
 	}
 
-	return rs, nil
+	var pc = make([]Conf, 0)
+
+	for _, item := range rs {
+		pc = append(pc, item.PublicFields())
+	}
+
+	return pc, nil
 }
 
-func ReadOne(id string) (Conf, error) {
-	var rec Conf
+func ReadOne(id string) (RawConf, error) {
+	var rec RawConf
 	row := db.QueryRow("SELECT * FROM confs WHERE id=$1 ORDER BY id", id)
 
 	fmt.Printf("%v", row)
@@ -139,9 +145,9 @@ func ReadOne(id string) (Conf, error) {
 		&rec.Discount_program,
 		&rec.Min_price,
 		&rec.Max_price,
-		&rec.Facebook_account,
-		&rec.Youtube_account,
-		&rec.Twitter_account,
+		&rec.Facebook,
+		&rec.Youtube,
+		&rec.Twitter,
 		&rec.Details,
 		&rec.Verified,
 		&rec.Deleted,
