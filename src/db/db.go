@@ -123,13 +123,9 @@ func Read() ([]Conf, error) {
 	return pc, nil
 }
 
-func ReadOne(id string) (RawConf, error) {
+func ReadOne(id string) (Conf, error) {
 	var rec RawConf
-	row := db.QueryRow("SELECT * FROM confs WHERE id=$1 ORDER BY id", id)
-
-	fmt.Printf("%v", row)
-
-	return rec, row.Scan(
+	err := db.QueryRow("SELECT * FROM confs WHERE id=$1 ORDER BY id", id).Scan(
 		&rec.Id,
 		&rec.Title,
 		&rec.Added_by,
@@ -154,6 +150,13 @@ func ReadOne(id string) (RawConf, error) {
 		&rec.Created_at,
 		&rec.Updated_at,
 	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	public := rec.PublicFields()
+
+	return public, nil
 }
 
 func Remove(id string) (sql.Result, error) {
