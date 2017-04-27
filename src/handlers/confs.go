@@ -20,6 +20,13 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!\n")
 }
 
+func sendRespose(w http.ResponseWriter, data []byte) {
+	// TODO: if ENV == develop
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Write(data)
+}
+
 func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	recs, err := db.Read()
 
@@ -44,16 +51,11 @@ func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	log.Println("Sending response..")
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write(data)
-	log.Println("Done.")
+	sendRespose(w, data)
 }
 
-func GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func GetOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
-	fmt.Printf("%s\n", id)
 
 	rec, err := db.ReadOne(id)
 
@@ -64,6 +66,7 @@ func GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		}
 
 		log.Fatal("Failed reading row" + err.Error())
+		w.WriteHeader(500)
 		return
 	}
 
@@ -74,16 +77,12 @@ func GetById(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	data, err := json.Marshal(res)
 	if err != nil {
-		//  log errors
 		log.Fatal(err)
 		w.WriteHeader(500)
 		return
 	}
 
-	log.Println("Sending response..")
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write(data)
-	log.Println("Done.")
+	sendRespose(w, data)
 }
 
 func DeleteOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -109,6 +108,7 @@ func Add(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		w.WriteHeader(400)
 		return
 	}
+
 	if _, err := db.Insert(rec); err != nil {
 		w.WriteHeader(500)
 		return

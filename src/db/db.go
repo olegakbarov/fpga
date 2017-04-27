@@ -28,7 +28,6 @@ var db *sql.DB
 
 func InitDB() {
 	var err error
-	var rows *sql.Rows
 
 	db, err = sql.Open("postgres", getConfig())
 
@@ -122,6 +121,7 @@ func Read() ([]Conf, error) {
 
 func ReadOne(id string) (Conf, error) {
 	var rec RawConf
+
 	err := db.QueryRow("SELECT * FROM confs WHERE id=$1 ORDER BY id", id).Scan(
 		&rec.Id,
 		&rec.Title,
@@ -147,13 +147,15 @@ func ReadOne(id string) (Conf, error) {
 		&rec.Created_at,
 		&rec.Updated_at,
 	)
+
 	if err != nil {
 		log.Fatal(err)
+		return Conf{}, err
+	} else {
+		public := rec.PublicFields()
+
+		return public, nil
 	}
-
-	public := rec.PublicFields()
-
-	return public, nil
 }
 
 func Remove(id string) (sql.Result, error) {

@@ -17,11 +17,11 @@ func main() {
 
 	router.GET("/", handlers.Index)
 	router.GET("/api/v1/conf", handlers.GetAll)
-	router.GET("/api/v1/conf/:id", handlers.GetById)
+	router.GET("/api/v1/conf/:id", handlers.GetOne)
 	router.POST("/api/v1/conf", handlers.Add)
 	router.DELETE("/api/v1/conf/:id", handlers.DeleteOne)
-
 	router.PUT("/api/v1/conf/:id", handlers.NotImplemented)
+
 	router.POST("/api/v1/auth/get_token", handlers.NotImplemented)
 	router.POST("/api/v1/conf/login", handlers.NotImplemented)
 	router.POST("/api/v1/conf/logout", handlers.NotImplemented)
