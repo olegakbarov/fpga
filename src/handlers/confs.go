@@ -117,6 +117,26 @@ func Add(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(201)
 }
 
+func Edit(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	decoder := json.NewDecoder(r.Body)
+	var rec db.Conf
+
+	err := decoder.Decode(&rec)
+	fmt.Printf("%s\n", &rec)
+
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	if _, err := db.Insert(rec); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.WriteHeader(201)
+}
+
 func NotImplemented(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Write([]byte("Not Implemented"))
 }
