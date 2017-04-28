@@ -87,7 +87,6 @@ func GetOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 func DeleteOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
-	fmt.Printf("%s\n", id)
 
 	if _, err := db.Remove(id); err != nil {
 		log.Fatal("Failed deleting record" + err.Error())
@@ -117,19 +116,18 @@ func Add(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(201)
 }
 
-func Edit(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	decoder := json.NewDecoder(r.Body)
+func Edit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var rec db.Conf
 
-	err := decoder.Decode(&rec)
-	fmt.Printf("%s\n", &rec)
+	err := json.NewDecoder(r.Body).Decode(&rec)
+	fmt.Println("%s", &rec)
 
 	if err != nil {
 		w.WriteHeader(400)
 		return
 	}
 
-	if _, err := db.Insert(rec); err != nil {
+	if _, err := db.EditOne(rec); err != nil {
 		w.WriteHeader(500)
 		return
 	}

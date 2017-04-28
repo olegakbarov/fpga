@@ -8,10 +8,8 @@ import (
 
 type PropertyMap map[string]interface{}
 
-type Conf struct {
-	Id                string      `json:"id"`
+type ConfInput struct {
 	Title             string      `json:"name"`
-	Added_by          string      `json:"added_by"`
 	Start_date        time.Time   `json:"start_date"`
 	End_date          time.Time   `json:"end_date"`
 	Description       string      `json:"description"`
@@ -28,6 +26,12 @@ type Conf struct {
 	Youtube           null.String `json:"youtube"`
 	Twitter           null.String `json:"twitter"`
 	Details           PropertyMap `json:"details"`
+}
+
+type Conf struct {
+	ConfInput
+	Id       string `json:"id"`
+	Added_by string `json:"added_by"`
 }
 
 // This stored in database and have private fields

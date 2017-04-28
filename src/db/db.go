@@ -7,7 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"strconv"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 func getConfig() string {
@@ -22,6 +26,15 @@ func getConfig() string {
 	log.Printf("Config looks like this: %s", info)
 
 	return info
+}
+
+func getID(w http.ResponseWriter, ps httprouter.Params) (int, bool) {
+	id, err := strconv.Atoi(ps.ByName("id"))
+	if err != nil {
+		w.WriteHeader(400)
+		return 0, false
+	}
+	return id, true
 }
 
 var db *sql.DB
@@ -156,6 +169,32 @@ func ReadOne(id string) (Conf, error) {
 
 		return public, nil
 	}
+}
+
+func EditOne(conf Conf) (sql.Result, error) {
+	res, err := db.Exec("UPDATE confs SET id= $1, Added_by = $2 title = $3, start_date = $4, end_data = $5, description = $6, picture = $7, country = $8, city = $9, address = $10, category = $11, tickets_available = $12, discount_program = $13, min_price = $14, max_price = $15, facebook = $16, youtube = $17, twitter = $18, details = $19 WHERE id=$1",
+		conf.Id,
+		conf.Added_by,
+		conf.Title,
+		conf.Start_date,
+		conf.End_date,
+		conf.Description,
+		conf.Picture,
+		conf.Country,
+		conf.City,
+		conf.Address,
+		conf.Category,
+		conf.Tickets_available,
+		conf.Discount_program,
+		conf.Min_price,
+		conf.Max_price,
+		conf.Facebook,
+		conf.Youtube,
+		conf.Twitter,
+		conf.Details,
+	)
+
+	return res, err
 }
 
 func Remove(id string) (sql.Result, error) {
