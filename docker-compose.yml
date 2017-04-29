@@ -20,7 +20,7 @@ services:
         - postgresql:/var/lib/postgresql
         - postgresql_data:/var/lib/postgresql/data
 
-  confsio:
+  api:
     build:
       context: .
       dockerfile: Dockerfile.app
@@ -34,12 +34,20 @@ services:
       - DB_PASS=${DB_PASS}
     restart: unless-stopped
 
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    links:
+        - api:api
+
   proxy:
     image: nginx:latest
     ports:
-        - "9999:80" # host:container
+        - "8080:80"   # expose frontend on 80
+        - "9999:9999" # expose api for debug purposes
         - "443:443"
     volumes:
         - ./nginx.conf:/etc/nginx/nginx.conf:ro
     links:
-        - confsio:app
+        - api:api
