@@ -123,11 +123,12 @@ func Edit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	fmt.Println("%s", &rec)
 
 	if err != nil {
+		log.Fatal(err)
 		w.WriteHeader(400)
 		return
 	}
 
-	if _, err := db.EditOne(rec); err != nil {
+	if _, err := db.EditOne(&rec); err != nil {
 		w.WriteHeader(500)
 		return
 	}

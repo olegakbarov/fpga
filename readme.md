@@ -47,5 +47,5 @@ Copy file from container to host: `docker cp <containerId>:/file/path/within/con
 ### 'Tests'
 
 ```
-curl -H "Content-Type: application/json" -X PUT -d '{ "name": "UPDATED CONF", "start_date": "2017-10-19T08:00:00Z", "end_date": "2017-10-22T08:00:00Z", "description": "yolo", "picture": "null", "country": "USA", "city": "SF", "address": "Rodeo drive 1", "category": "big data", "tickets_available": "false", "discount_program": false, "min_price": 0, "max_price": 100, "facebook": "null", "youtube": "null", "twitter": "null", "details": {}}' http://localhost:9999/api/v1/conf/m5j3aUfH
+curl -H "Content-Type: application/json" -X PUT -d '{ "name": "UPDATED CONF", "start_date": "2017-10-19T08:00:00Z", "end_date": "2017-10-22T08:00:00Z", "description": "yolo", "picture": null, "country": "USA", "city": "SF", "address": "Rodeo drive 1", "category": "big data", "tickets_available": false, "discount_program": false, "min_price": 0, "max_price": 100, "facebook": null, "youtube": null, "twitter": null, "details": {}, "id": "j_0DQDNJ", "added_by": "fNQMyCmo"}' http://localhost:9999/api/v1/conf/85FFhuET
 ```
