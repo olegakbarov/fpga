@@ -23,7 +23,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile.app
+      dockerfile: Dockerfile.api
     links:
       - postgresd:postgresd
     environment:
