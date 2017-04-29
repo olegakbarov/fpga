@@ -172,7 +172,12 @@ func ReadOne(id string) (Conf, error) {
 }
 
 func EditOne(conf *Conf) (sql.Result, error) {
-	res, err := db.Exec("UPDATE confs SET title = $1, start_date = $2, end_date = $3, description = $4, picture = $5, country = $6, city = $7, address = $8, category = $9, tickets_available = $10, discount_program = $11, min_price = $12, max_price = $13, facebook = $14, youtube = $15, twitter = $16, details = $17, id = $18, added_by = $19 WHERE id = $18",
+	stmt, err := db.Prepare("UPDATE confs SET title = $1, start_date = $2, end_date = $3, description = $4, picture = $5, country = $6, city = $7, address = $8, category = $9, tickets_available = $10, discount_program = $11, min_price = $12, max_price = $13, facebook = $14, youtube = $15, twitter = $16, details = $17, id = $18, added_by = $19 WHERE id = $18")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res, err := stmt.Exec(
 		&conf.Title,
 		&conf.Start_date,
 		&conf.End_date,
