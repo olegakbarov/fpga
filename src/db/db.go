@@ -2,81 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"database/sql/driver"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
-	"net/http"
-	"os"
-	"strconv"
-
-	"github.com/julienschmidt/httprouter"
 )
-
-func getConfig() string {
-	info := fmt.Sprintf("host=%s port=%s dbname=%s sslmode=%s user=%s password=%s ",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
-		"disable",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASS"))
-
-	log.Printf("Config looks like this: %s", info)
-
-	return info
-}
-
-func getID(w http.ResponseWriter, ps httprouter.Params) (int, bool) {
-	id, err := strconv.Atoi(ps.ByName("id"))
-	if err != nil {
-		w.WriteHeader(400)
-		return 0, false
-	}
-	return id, true
-}
-
-var db *sql.DB
-
-func InitDB() {
-	var err error
-
-	db, err = sql.Open("postgres", getConfig())
-
-	if err != nil {
-		log.Fatal("Error: The data source arguments are not valid - " + err.Error())
-	}
-
-	if err = db.Ping(); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func (p PropertyMap) Value() (driver.Value, error) {
-	j, err := json.Marshal(p)
-	return j, err
-}
-
-func (p *PropertyMap) Scan(src interface{}) error {
-	source, ok := src.([]byte)
-	if !ok {
-		return errors.New("Type assertion .([]byte) failed.")
-	}
-
-	var i interface{}
-	err := json.Unmarshal(source, &i)
-	if err != nil {
-		return err
-	}
-
-	*p, ok = i.(map[string]interface{})
-	if !ok {
-		return errors.New("Type assertion .(map[string]interface{}) failed.")
-	}
-
-	return nil
-}
 
 func Read() ([]Conf, error) {
 	var rows *sql.Rows
@@ -206,7 +134,31 @@ func Remove(id string) (sql.Result, error) {
 	return db.Exec("DELETE FROM confs WHERE id=$1", id)
 }
 
-func Insert(item Conf) (sql.Result, error) {
-	// todo insert one by one??
-	return db.Exec("INSERT INTO confs VALUES (default, $1)", item)
+func Insert(conf *Conf) (sql.Result, error) {
+	// TODO! remove hardcoded get_userid()
+
+	stmt, err := db.Prepare("INSERT INTO confs (title, added_by, start_date, end_date, description, picture, country, city, address, category, tickets_available, discount_program, min_price, max_price, facebook, youtube, twitter, details) values ($1, get_userid('Oleg'), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return stmt.Exec(
+		&conf.Title,
+		&conf.Start_date,
+		&conf.End_date,
+		&conf.Description,
+		&conf.Picture,
+		&conf.Country,
+		&conf.City,
+		&conf.Address,
+		&conf.Category,
+		&conf.Tickets_available,
+		&conf.Discount_program,
+		&conf.Min_price,
+		&conf.Max_price,
+		&conf.Facebook,
+		&conf.Youtube,
+		&conf.Twitter,
+		&conf.Details,
+	)
 }

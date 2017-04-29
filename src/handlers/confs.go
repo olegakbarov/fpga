@@ -30,13 +30,13 @@ func sendRespose(w http.ResponseWriter, data []byte) {
 func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	recs, err := db.Read()
 
-	log.Printf("DB rows: %v", recs)
-
 	if err != nil {
 		log.Fatal("Error quering the db- " + err.Error())
 		w.WriteHeader(500)
 		return
 	}
+
+	log.Printf("DB rows: %v", recs)
 
 	res := Envelope{
 		Result: "OK",
@@ -85,18 +85,7 @@ func GetOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	sendRespose(w, data)
 }
 
-func DeleteOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	id := ps.ByName("id")
-
-	if _, err := db.Remove(id); err != nil {
-		log.Fatal("Failed deleting record" + err.Error())
-		w.WriteHeader(500)
-	}
-
-	w.WriteHeader(204)
-}
-
-func Add(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	decoder := json.NewDecoder(r.Body)
 	var rec db.Conf
 
@@ -108,12 +97,29 @@ func Add(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	if _, err := db.Insert(rec); err != nil {
+	res, err := db.Insert(&rec)
+
+	if err != nil {
 		w.WriteHeader(500)
 		return
 	}
 
-	w.WriteHeader(201)
+	fmt.Println(res)
+
+	data := Envelope{
+		Result: "OK",
+		Data:   res,
+	}
+
+	d, err := json.Marshal(data)
+
+	if err != nil {
+		log.Fatal("Failed marshaling json" + err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	sendRespose(w, d)
 }
 
 func Edit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -133,7 +139,31 @@ func Edit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	w.WriteHeader(201)
+	data := Envelope{
+		Result: "OK",
+		Data:   rec,
+	}
+
+	d, err := json.Marshal(data)
+
+	if err != nil {
+		log.Fatal("Failed marshaling json" + err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	sendRespose(w, d)
+}
+
+func DeleteOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	id := ps.ByName("id")
+
+	if _, err := db.Remove(id); err != nil {
+		log.Fatal("Failed deleting record" + err.Error())
+		w.WriteHeader(500)
+	}
+
+	w.WriteHeader(204)
 }
 
 func NotImplemented(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

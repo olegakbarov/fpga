@@ -18,7 +18,7 @@ func main() {
 	router.GET("/", handlers.Index)
 	router.GET("/api/v1/conf", handlers.GetAll)
 	router.GET("/api/v1/conf/:id", handlers.GetOne)
-	router.POST("/api/v1/conf", handlers.Add)
+	router.POST("/api/v1/conf", handlers.Create)
 	router.DELETE("/api/v1/conf/:id", handlers.DeleteOne)
 	router.PUT("/api/v1/conf/:id", handlers.Edit)
 
