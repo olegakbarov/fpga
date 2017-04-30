@@ -1,3 +1,4 @@
 FROM scratch
 ADD main /
+EXPOSE  9999
 CMD ["/main"]

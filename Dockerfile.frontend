@@ -2,5 +2,5 @@ FROM node:7.9.0-alpine
 WORKDIR .
 ADD ./frontend .
 RUN npm install
-EXPOSE 8080
+EXPOSE 1337
 CMD ["npm", "run", "start:prod"]

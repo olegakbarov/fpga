@@ -1,4 +1,4 @@
-### io.confs.api
+### io.confs.core
 
 Dockerized API service
 
@@ -9,14 +9,23 @@ Dockerized API service
 
 ### Start
 
-...
-
-This results running nginx-server on port `9999` proxying requests to App
-
-
 ### Develop
 
 TODO
+
+### Ports cheatsheet
+
+Inside containers:
+
+```
+1337 — frontend
+3000 — grafana
+6666 — postgres
+8086, 8083 — influxdb
+8080 — cadvisor
+9999 — api
+```
+Exposed:
 
 ### Linking containers caveats
 
@@ -44,7 +53,7 @@ Inspect container's ENV variables: `docker inspect -f "{{ .Config.Env }}" contai
 
 Copy file from container to host: `docker cp <containerId>:/file/path/within/container /host/path/target`
 
-### 'Tests'
+###  $ Curls
 
 #### edit :id & :user-id
 
@@ -57,3 +66,7 @@ curl -H "Content-Type: application/json" -X PUT -d '{ "name": "UPDATED CONF", "s
 ```
 curl -H "Content-Type: application/json" -X POST -d '{ "name": "CREATED!CONF", "start_date": "2017-10-19T08:00:00Z", "end_date": "2017-10-22T08:00:00Z", "description": "yolo", "picture": null, "country": "USA", "city": "SF", "address": "Rodeo drive 1", "category": "big data", "tickets_available": false, "discount_program": false, "min_price": 0, "max_price": 100, "facebook": null, "youtube": null, "twitter": null, "details": {}}' http://localhost:9999/api/v1/conf
 ```
+
+###  Monitoring
+
+from `https://www.brianchristner.io/how-to-setup-docker-monitoring/`

@@ -27,5 +27,5 @@ func main() {
 	router.POST("/api/v1/conf/logout", handlers.NotImplemented)
 	router.POST("/api/v1/conf/signup", handlers.NotImplemented)
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":9999", router))
 }
