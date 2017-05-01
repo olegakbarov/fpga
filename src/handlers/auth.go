@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/olegakbarov/io.confs.api/src/db"
+	"github.com/olegakbarov/io.confs.core/src/db"
 	"golang.org/x/crypto/bcrypt"
 )
 

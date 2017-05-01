@@ -31,7 +31,7 @@ Exposed:
 
 ```yaml
 links:
-  - confsio:app
+  - api:api
 ```
 
 This creates environment variables in proxy container, with ip and port info for go container, also creates entries in /etc/hosts with ip info [other container]:[alias in this container]
@@ -52,6 +52,10 @@ Run Docker image with port-forwarding: `docker run -it -p 8080:8080 confsio_img`
 Inspect container's ENV variables: `docker inspect -f "{{ .Config.Env }}" container-id`
 
 Copy file from container to host: `docker cp <containerId>:/file/path/within/container /host/path/target`
+
+### Docker Monitoring
+
+https://www.brianchristner.io/how-to-setup-docker-monitoring/
 
 ###  $ Curls
 
