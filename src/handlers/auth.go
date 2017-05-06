@@ -42,7 +42,7 @@ func GetToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	res := Envelope{
 		Result: "OK",
-		Data:   recs,
+		Data:   token,
 	}
 
 	data, err := json.Marshal(res)
@@ -56,4 +56,8 @@ func GetToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(data)
+}
+
+func CheckAuth(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	//
 }

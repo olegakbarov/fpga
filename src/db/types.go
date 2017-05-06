@@ -46,14 +46,3 @@ type RawConf struct {
 func (r RawConf) PublicFields() Conf {
 	return r.Conf
 }
-
-type User struct {
-	FirstName string      `json:"first_name"`
-	LastName  string      `json:"last_name"`
-	Locale    null.String `json:"locale"`
-	City      null.String `json:"city"`
-	Userpic   null.String `json:"userpic"`
-	Email     string      `json:"email"`
-	Verified  bool        `json:"verified"`
-	Settings  PropertyMap `json:"settings"`
-}
