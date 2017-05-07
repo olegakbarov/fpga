@@ -9,22 +9,12 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/olegakbarov/io.confs.core/src/db"
+	"github.com/olegakbarov/io.confs.core/src/utils"
 )
 
 type Envelope struct {
 	Result string      `json:"result"`
 	Data   interface{} `json:"data"`
-}
-
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome!\n")
-}
-
-func sendRespose(w http.ResponseWriter, data []byte) {
-	// TODO: if ENV == develop
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write(data)
 }
 
 func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -35,8 +25,6 @@ func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		w.WriteHeader(500)
 		return
 	}
-
-	log.Printf("DB rows: %v", recs)
 
 	res := Envelope{
 		Result: "OK",
@@ -51,7 +39,7 @@ func GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	sendRespose(w, data)
+	utils.SendRespose(w, data)
 }
 
 func GetOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -82,7 +70,7 @@ func GetOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	sendRespose(w, data)
+	utils.SendRespose(w, data)
 }
 
 func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -104,8 +92,6 @@ func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	fmt.Println(res)
-
 	data := Envelope{
 		Result: "OK",
 		Data:   res,
@@ -119,14 +105,13 @@ func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	sendRespose(w, d)
+	utils.SendRespose(w, d)
 }
 
 func Edit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var rec db.Conf
 
 	err := json.NewDecoder(r.Body).Decode(&rec)
-	fmt.Println("%s", &rec)
 
 	if err != nil {
 		log.Fatal(err)
@@ -152,7 +137,7 @@ func Edit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	sendRespose(w, d)
+	utils.SendRespose(w, d)
 }
 
 func DeleteOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

@@ -2,82 +2,29 @@ package handlers
 
 import (
 	"encoding/json"
-	"errors"
-	"io"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"time"
+	"strings"
 
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
-
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/julienschmidt/httprouter"
+	"github.com/olegakbarov/io.confs.core/src/db"
+	"github.com/olegakbarov/io.confs.core/src/utils"
 )
 
 var SECRET string = os.Getenv("SECRET")
 
-func encrypt(plaintext []byte, key []byte) ([]byte, error) {
-	c, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
+func HandleSignup(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var rec db.User
 
-	gcm, err := cipher.NewGCM(c)
-	if err != nil {
-		return nil, err
-	}
+	err := decoder.Decode(&rec)
+	fmt.Printf("%s\n", &rec)
 
-	nonce := make([]byte, gcm.NonceSize())
-	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		return nil, err
-	}
+	user, err := users.GetOne(&rec.id)
 
-	return gcm.Seal(nonce, nonce, plaintext, nil), nil
-}
-
-func decrypt(ciphertext []byte, key []byte) ([]byte, error) {
-	c, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
-
-	gcm, err := cipher.NewGCM(c)
-	if err != nil {
-		return nil, err
-	}
-
-	nonceSize := gcm.NonceSize()
-	if len(ciphertext) < nonceSize {
-		return nil, errors.New("ciphertext too short")
-	}
-
-	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
-	return gcm.Open(nil, nonce, ciphertext, nil)
-}
-
-func GenerateToken() ([]byte, error) {
-	t := time.Now().Format("2006-01-02 15:04:05")
-
-	return encrypt([]byte(t), []byte(SECRET))
-}
-
-func GetToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	// user id
-	// password candidate
-	var rec RawUser
-
-	err := db.QueryRow("SELECT * FROM users WHERE id=$1 ORDER BY id", id).Scan(
-
-	if err != nil {
-		log.Fatal("Error quering the db- " + err.Error())
-		w.WriteHeader(500)
-		return
-	}
-
-	// hash, err := HashPassword(password)
-	// match := CheckPasswordHash(password, hash)
 	token, err := GenerateToken()
 	if err != nil {
 		log.Fatal(err)
@@ -97,14 +44,58 @@ func GetToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write(data)
+	utils.SendRespose(w, data)
 }
 
-func CheckAuth(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var authHeader string
-	if _, ok := r.Header["Authentication"]; ok {
-		authHeader = r.Header.Get("Authentication")
-	}
+func HandleLogin(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// validate shit
+	// hash pwd
+	// save to db
+	// 200ok
+}
+
+func HandleLogout(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// validate shit
+	// hash pwd
+	// save to db
+	// 200ok
+}
+
+func CheckAuth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var token string
+
+		tokens, ok := r.Header["Authorization"]
+		if ok && len(tokens) >= 1 {
+			token = tokens[0]
+			token = strings.TrimPrefix(token, "Bearer ")
+		}
+
+		if token == "" {
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
+		}
+
+		parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				msg := fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+				return nil, msg
+			}
+			return a.encryptionKey, nil
+		})
+
+		if err != nil {
+			http.Error(w, "Error parsing token", http.StatusUnauthorized)
+			return
+		}
+
+		if parsedToken != nil && parsedToken.Valid {
+			context.Set(r, "user", parsedToken)
+			next.ServeHTTP(w, r)
+			fmt.Println("yay! token is valid")
+		}
+
+		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		return
+	})
 }
