@@ -2,33 +2,73 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"time"
+
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/olegakbarov/io.confs.core/src/db"
-	"golang.org/x/crypto/bcrypt"
 )
 
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
+var SECRET string = os.Getenv("SECRET")
+
+func encrypt(plaintext []byte, key []byte) ([]byte, error) {
+	c, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, err
+	}
+
+	return gcm.Seal(nonce, nonce, plaintext, nil), nil
 }
 
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+func decrypt(ciphertext []byte, key []byte) ([]byte, error) {
+	c, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		return nil, err
+	}
+
+	nonceSize := gcm.NonceSize()
+	if len(ciphertext) < nonceSize {
+		return nil, errors.New("ciphertext too short")
+	}
+
+	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
+	return gcm.Open(nil, nonce, ciphertext, nil)
 }
 
-func GenerateToken() string {
-	token := "TODO-REMOVE-ME-PLZ"
+func GenerateToken() ([]byte, error) {
+	t := time.Now().Format("2006-01-02 15:04:05")
 
-	return token
+	return encrypt([]byte(t), []byte(SECRET))
 }
 
 func GetToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	// compare username/pass
-	recs, err := db.Read()
+	// user id
+	// password candidate
+	var rec RawUser
+
+	err := db.QueryRow("SELECT * FROM users WHERE id=$1 ORDER BY id", id).Scan(
 
 	if err != nil {
 		log.Fatal("Error quering the db- " + err.Error())
@@ -38,7 +78,11 @@ func GetToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	// hash, err := HashPassword(password)
 	// match := CheckPasswordHash(password, hash)
-	// token := GenerateToken(user)
+	token, err := GenerateToken()
+	if err != nil {
+		log.Fatal(err)
+		w.WriteHeader(401)
+	}
 
 	res := Envelope{
 		Result: "OK",
@@ -59,5 +103,8 @@ func GetToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func CheckAuth(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	//
+	var authHeader string
+	if _, ok := r.Header["Authentication"]; ok {
+		authHeader = r.Header.Get("Authentication")
+	}
 }

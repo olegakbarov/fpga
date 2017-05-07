@@ -34,7 +34,6 @@ type Conf struct {
 	Added_by string `json:"added_by"`
 }
 
-// This stored in database and have private fields
 type RawConf struct {
 	Conf
 	Verified   bool      `json:"verified"`
