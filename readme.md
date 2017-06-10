@@ -13,6 +13,8 @@ Dockerized API service
 
 TODO
 
+ORM: https://upper.io/db.v2/examples
+
 ### Ports cheatsheet
 
 Inside containers:
@@ -25,6 +27,7 @@ Inside containers:
 8080 — cadvisor
 9999 — api
 ```
+
 Exposed:
 
 ### Linking containers caveats
@@ -70,7 +73,3 @@ curl -H "Content-Type: application/json" -X PUT -d '{ "name": "UPDATED CONF", "s
 ```
 curl -H "Content-Type: application/json" -X POST -d '{ "name": "CREATED!CONF", "start_date": "2017-10-19T08:00:00Z", "end_date": "2017-10-22T08:00:00Z", "description": "yolo", "picture": null, "country": "USA", "city": "SF", "address": "Rodeo drive 1", "category": "big data", "tickets_available": false, "discount_program": false, "min_price": 0, "max_price": 100, "facebook": null, "youtube": null, "twitter": null, "details": {}}' http://localhost:9999/api/v1/conf
 ```
-
-###  Monitoring
-
-from `https://www.brianchristner.io/how-to-setup-docker-monitoring/`

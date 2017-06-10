@@ -3,9 +3,9 @@ frontend
 data
 sqls
 confs.data
-
 notes.md
 main
 redocker
 run
 loadtest
+.env

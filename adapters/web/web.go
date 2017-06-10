@@ -1,18 +1,14 @@
-package main
+package web
 
 import (
 	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	_ "github.com/lib/pq"
-	"github.com/olegakbarov/io.confs.core/src/db"
 	"github.com/olegakbarov/io.confs.core/src/handlers"
 )
 
-func main() {
-	db.InitDB()
-
+func NewWebAdapter() {
 	router := httprouter.New()
 
 	router.GET("/api/v1/conf", handlers.GetAll)

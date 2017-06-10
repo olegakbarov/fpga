@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file="main"
+file="./api/main"
 
 if [ -f $file ] ; then
     rm $file

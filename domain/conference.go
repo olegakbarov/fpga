@@ -1,4 +1,4 @@
-package db
+package domain
 
 import (
 	"time"
@@ -8,7 +8,7 @@ import (
 
 type PropertyMap map[string]interface{}
 
-type ConfInput struct {
+type ConferenceInput struct {
 	Title             string      `json:"name"`
 	Start_date        time.Time   `json:"start_date"`
 	End_date          time.Time   `json:"end_date"`
@@ -28,42 +28,20 @@ type ConfInput struct {
 	Details           PropertyMap `json:"details"`
 }
 
-type Conf struct {
-	ConfInput
+type Conference struct {
+	ConferenceInput
 	Id       string `json:"id"`
 	Added_by string `json:"added_by"`
 }
 
-type RawConf struct {
-	Conf
+type RawConference struct {
+	Conference
 	Verified   bool      `json:"verified"`
 	Deleted    bool      `json:"deleted"`
 	Created_at time.Time `json:"created_at"`
 	Updated_at time.Time `json:"updated_at"`
 }
 
-type User struct {
-	FirstName string      `json:"first_name"`
-	LastName  string      `json:"last_name"`
-	Email     string      `json:"email"`
-	Locale    null.String `json:"locale"`
-	City      null.String `json:"city"`
-	Userpic   null.String `json:"userpic"`
-	Settings  PropertyMap `json:"settings"`
-}
-
-type RawUser struct {
-	User
-	PasswordHash string    `json:"password_hash"`
-	Deleted      bool      `json:"deleted"`
-	Created_at   time.Time `json:"created_at"`
-	Updated_at   time.Time `json:"updated_at"`
-}
-
-func (r RawConf) PublicFields() Conf {
-	return r.Conf
-}
-
-func (r RawUser) PublicFields() User {
-	return r.User
+func (r RawConference) PublicFields() Conference {
+	return r.Conference
 }

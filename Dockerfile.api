@@ -1,4 +1,4 @@
 FROM scratch
 ADD main /
-EXPOSE  9999
-CMD ["/main"]
+EXPOSE  8080
+CMD ["/api/main"]
