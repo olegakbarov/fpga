@@ -3,7 +3,8 @@ pkill main
 source .env
 go run api/main.go &
 
-inotifywait -m -r -e close_write adapters domain core providers | while read line
+fswatch api adapters domain core providers | while read line
 do
-  pkill main && go run api/main.go &
+    killall -9 main;
+    go run api/main.go &
 done

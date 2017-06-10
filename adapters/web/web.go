@@ -1,16 +1,25 @@
 package web
 
 import (
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
-	"github.com/olegakbarov/io.confs.core/src/handlers"
+	"github.com/justinas/alice"
+	"github.com/olegakbarov/io.confs.core/core"
 )
 
-func NewWebAdapter() {
+func NewWebAdapter(f core.Factory) http.Handler {
 	router := httprouter.New()
 
-	router.POST("/api/v1/conf/signup", handlers.HandleSignup)
-	router.POST("/api/v1/conf/login", handlers.HandleLogin)
-	router.POST("/api/v1/conf/logout", auth.CheckAuth(handlers.HandleLogout))
+	base := alice.New(newSetUserMid(f.NewUser()))
+	authRequired := base.Append(newAuthRequiredMid)
+	// adminOnly := authRequired.Append(newAdminOnlyMid)
+
+	user := newUser(f)
+
+	router.POST("/api/v1/conf/signup", base.Then(errHandlerFunc(user.signup)))
+	router.POST("/api/v1/conf/login", base.Then(errHandlerFunc(user.login)))
+	router.POST("/api/v1/conf/logout", base.Then(errHandlerFunc(user.logout)))
 
 	// router.GET("/api/v1/conf", handlers.GetAll)
 	// router.GET("/api/v1/conf/:id", handlers.GetOne)

@@ -8,14 +8,13 @@ import (
 
 	"sync"
 
-	"github.com/olegakbarov/io.confs.core/src/domain"
+	"github.com/olegakbarov/io.confs.core/domain"
 	"github.com/pkg/errors"
 )
 
 type (
 	TokenType uint8
 
-	// User service interface
 	User interface {
 		GetFromAuthToken(tokenStr string) (*domain.User, error)
 		GenToken(*domain.User, TokenType) (string, error)
@@ -36,45 +35,38 @@ type (
 		emitter   Emitter
 	}
 
-	// LoginRequest context for user.Login()
 	LoginRequest struct {
 		Email    string
 		Password string
 	}
 
-	// RegisterRequest context for user.Register()
 	RegisterRequest struct {
 		Email         string
 		Password      string
 		FirstName     string `json:"firstName"`
 		LastName      string `json:"lastName"`
-		IsActive      *bool  `json:"-"`
+		Confirmed     *bool  `json:"-"`
 		ActivationURL string `json:"-"`
 	}
 
-	// UserActivateRequest context for user.Activate()
 	UserActivateRequest struct {
 		Token string `json:"token"`
 	}
 
-	//ForgotPasswordRequest context for user.ForgotPassword()
 	ForgotPasswordRequest struct {
 		Email   string
 		BaseURL string
 	}
 
-	// ResetPasswordRequest context for user.ResetPassword()
 	ResetPasswordRequest struct {
 		Token    string
 		Password string
 	}
 
-	// ShowUserRequest context for user.Show()
 	ShowUserRequest struct {
 		ID uint
 	}
 
-	// UpdateUserRequest context for user.Update()
 	UpdateUserRequest struct {
 		ID uint `json:"-"`
 		RegisterRequest
@@ -86,7 +78,6 @@ var (
 	userOnce     sync.Once
 )
 
-// Token Types
 const (
 	AuthToken TokenType = iota
 	ActivationToken
@@ -120,7 +111,7 @@ func (u *user) Login(r *LoginRequest) (*domain.User, error) {
 		return nil, ErrWrongCredentials
 	}
 
-	if !*usr.IsActive {
+	if !*usr.Confirmed {
 		return nil, ErrInActiveUser
 	}
 	return usr, nil
@@ -143,8 +134,8 @@ func (u *user) Register(r *RegisterRequest) (*domain.User, error) {
 		return nil, ErrEmailExists
 	}
 
-	if r.IsActive == nil {
-		r.IsActive = boolPtr(false)
+	if r.Confirmed == nil {
+		r.Confirmed = boolPtr(false)
 	}
 
 	var usr domain.User
@@ -152,7 +143,7 @@ func (u *user) Register(r *RegisterRequest) (*domain.User, error) {
 	usr.LastName = r.LastName
 	usr.Email = r.Email
 	usr.SetPassword(r.Password)
-	usr.IsActive = r.IsActive
+	usr.Confirmed = r.Confirmed
 	usr.IsAdmin = boolPtr(false)
 
 	if err := u.repo.Add(&usr); err != nil {
@@ -160,7 +151,7 @@ func (u *user) Register(r *RegisterRequest) (*domain.User, error) {
 	}
 
 	// so we need to send activation mail?
-	if *r.IsActive {
+	if *r.Confirmed {
 		return &usr, nil // no :)
 	}
 
@@ -200,13 +191,11 @@ func (u *user) Activate(r *UserActivateRequest) error {
 		return err
 	}
 
-	// check if already active?
-	if *usr.IsActive {
+	if *usr.Confirmed {
 		return nil
 	}
 
-	// activate user
-	usr.IsActive = boolPtr(true)
+	usr.Confirmed = boolPtr(true)
 
 	return u.repo.Update(usr)
 }

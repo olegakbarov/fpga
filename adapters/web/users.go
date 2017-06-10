@@ -1,60 +1,59 @@
 package web
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
-	"os"
 
-	"github.com/julienschmidt/httprouter"
-	"github.com/olegakbarov/io.confs.core/src/db"
-	"github.com/olegakbarov/io.confs.core/src/utils"
+	"github.com/alioygur/gores"
+	"github.com/olegakbarov/io.confs.core/core"
 )
 
-var SECRET string = os.Getenv("SECRET")
-
-func HandleSignup(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var rec db.User
-
-	err := decoder.Decode(&rec)
-	fmt.Printf("%s\n", &rec)
-
-	user, err := users.GetOne(&rec.id)
-
-	token, err := GenerateToken()
-	if err != nil {
-		log.Fatal(err)
-		w.WriteHeader(401)
-	}
-
-	res := Envelope{
-		Result: "OK",
-		Data:   token,
-	}
-
-	data, err := json.Marshal(res)
-
-	if err != nil {
-		log.Fatal("Failed marshaling json" + err.Error())
-		w.WriteHeader(500)
-		return
-	}
-
-	utils.SendRespose(w, data)
+func newUser(f core.Factory) *user {
+	return &user{f.NewUser()}
 }
 
-func HandleLogin(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	// validate shit
-	// hash pwd
-	// save to db
-	// 200ok
+func (u *user) register(w http.ResponseWriter, r *http.Request) error {
+	req := new(core.RegisterRequest)
+	if err := decodeReq(r, req); err != nil {
+		return err
+	}
+
+	usr, err := u.Register(req)
+	if err != nil {
+		if err == core.ErrEmailExists {
+			return newWebErr(emailExistsErrCode, http.StatusConflict, err)
+		}
+		return err
+	}
+
+	jwt, err := u.GenToken(usr, core.AuthToken)
+	if err != nil {
+		return err
+	}
+
+	return gores.JSON(w, http.StatusCreated, response{jwt})
 }
 
-func HandleLogout(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	// validate shit
-	// hash pwd
-	// save to db
-	// 200ok
+func (u *user) login(w http.ResponseWriter, r *http.Request) error {
+	req := new(core.LoginRequest)
+	if err := decodeReq(r, req); err != nil {
+		return err
+	}
+
+	usr, err := u.Login(req)
+	if err != nil {
+		switch err {
+		case core.ErrWrongCredentials:
+			return newWebErr(wrongCredErrCode, http.StatusUnauthorized, err)
+		case core.ErrInActiveUser:
+			return newWebErr(inactiveUserErrCode, http.StatusUnauthorized, err)
+		}
+		return err
+	}
+
+	jwt, err := u.GenToken(usr, core.AuthToken)
+	if err != nil {
+		return err
+	}
+
+	return gores.JSON(w, http.StatusOK, response{jwt})
 }

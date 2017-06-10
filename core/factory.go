@@ -1,6 +1,11 @@
 package core
 
 type (
+	Emitter interface {
+		Emit(interface{}, ...interface{})
+		On(interface{}, interface{})
+	}
+
 	MailSender interface {
 		Send(to []string, subject string, body []byte) error
 	}
@@ -17,7 +22,6 @@ type (
 	}
 
 	Factory interface {
-		NewCatalog() Catalog
 		NewMail() Mailer
 		NewUser() User
 	}

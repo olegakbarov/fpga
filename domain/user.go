@@ -1,12 +1,14 @@
 package domain
 
 import (
-	"time"
+	"context"
 
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/guregu/null"
 )
+
+type contextKey string
 
 type UserPublicFields struct {
 	FirstName string      `json:"first_name"`
@@ -19,15 +21,30 @@ type UserPublicFields struct {
 }
 
 type User struct {
+	Model        `db:",inline"`
+	PasswordHash string `json:"password_hash"`
+	Confirmed    *bool  `json:"-"`
 	UserPublicFields
-	PasswordHash string    `json:"password_hash"`
-	Deleted      bool      `json:"deleted"`
-	Created_at   time.Time `json:"created_at"`
-	Updated_at   time.Time `json:"updated_at"`
 }
+
+type ReferenceFields struct {
+	ID        uint   `json:"id" db:"id,omitempty" gorm:"primary_key"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+var userContextKey contextKey = "user"
 
 func (u User) PublicFields() UserPublicFields {
 	return u.UserPublicFields
+}
+
+func (u User) ReferenceName() ReferenceFields {
+	return ReferenceFields{
+		u.ID,
+		u.FirstName,
+		u.LastName,
+	}
 }
 
 func (u *User) SetPassword(p string) {
@@ -39,28 +56,25 @@ func (u *User) SetPassword(p string) {
 	u.PasswordHash = string(hashedPassword)
 }
 
-// compares the givem password with password of user
 func (u *User) IsCredentialsVerified(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
 
 	return err == nil
 }
 
-// func (u *User) NewContext(ctx context.Context) context.Context {
-//     return context.WithValue(ctx, userContextKey, u)
-// }
+func (u *User) NewContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, userContextKey, u)
+}
 
-// // UserFromContext gets user from context
-// func UserFromContext(ctx context.Context) (*User, bool) {
-//     u, ok := ctx.Value(userContextKey).(*User)
-//     return u, ok
-// }
+func UserFromContext(ctx context.Context) (*User, bool) {
+	u, ok := ctx.Value(userContextKey).(*User)
+	return u, ok
+}
 
-// // UserMustFromContext gets user from context. if can't make panic
-// func UserMustFromContext(ctx context.Context) *User {
-//     u, ok := ctx.Value(userContextKey).(*User)
-//     if !ok {
-//         panic("user can't get from request's context")
-//     }
-//     return u
-// }
+func UserMustFromContext(ctx context.Context) *User {
+	u, ok := ctx.Value(userContextKey).(*User)
+	if !ok {
+		panic("user can't get from request's context")
+	}
+	return u
+}
