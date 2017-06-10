@@ -9,3 +9,5 @@ redocker
 run
 loadtest
 .env
+confs.data
+
