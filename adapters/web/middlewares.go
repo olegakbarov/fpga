@@ -76,7 +76,7 @@ func newAuthRequiredMid(next http.Handler) http.Handler {
 			return newWebErr(authRequiredErrCode, http.StatusUnauthorized, nil)
 		}
 
-		if !*usr.IsActive {
+		if !*usr.Confirmed {
 			return newWebErr(inactiveUserErrCode, http.StatusUnauthorized, nil)
 		}
 
@@ -91,13 +91,13 @@ func newAdminOnlyMid(next http.Handler) http.Handler {
 		if !ok {
 			return errors.New("user can't get from request's context")
 		}
-		if !*usr.IsActive {
+		if !*usr.Confirmed {
 			return errors.New("inactive user")
 		}
 
-		if *usr.IsAdmin != true {
-			return newWebErr(unknownErrCode, http.StatusUnauthorized, errors.New("permission denied"))
-		}
+		// if *usr.IsAdmin != true {
+		//     return newWebErr(unknownErrCode, http.StatusUnauthorized, errors.New("permission denied"))
+		// }
 
 		next.ServeHTTP(w, r)
 		return nil

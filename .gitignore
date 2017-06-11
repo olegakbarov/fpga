@@ -10,4 +10,4 @@ run
 loadtest
 .env
 confs.data
-
+devserver.sh

@@ -7,11 +7,17 @@ import (
 	"github.com/olegakbarov/io.confs.core/core"
 )
 
+type (
+	user struct {
+		core.User
+	}
+)
+
 func newUser(f core.Factory) *user {
 	return &user{f.NewUser()}
 }
 
-func (u *user) register(w http.ResponseWriter, r *http.Request) error {
+func (u *user) signup(w http.ResponseWriter, r *http.Request) error {
 	req := new(core.RegisterRequest)
 	if err := decodeReq(r, req); err != nil {
 		return err

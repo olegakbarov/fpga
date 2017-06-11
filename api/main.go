@@ -10,6 +10,8 @@ import (
 
 	"github.com/olegakbarov/io.confs.core/adapters/web"
 	"github.com/olegakbarov/io.confs.core/core"
+	"github.com/olegakbarov/io.confs.core/providers"
+	postgresqlrepo "github.com/olegakbarov/io.confs.core/providers/postgres"
 )
 
 func checkErr(err error) {
@@ -19,15 +21,24 @@ func checkErr(err error) {
 }
 
 func main() {
-	dbURL, err := parseDBURL(getConnUrl())
-	connURL, err := postgresql.ParseURL(dbURL)
-	checkErr(err)
+	settings := postgresql.ConnectionURL{
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASS"),
+		Host:     os.Getenv("DB_HOST"),
+		Database: os.Getenv("DB_NAME"),
+		Options: map[string]string{
+			"port":    os.Getenv("DB_PORT"),
+			"sslmode": "disable",
+		},
+	}
 
-	session, err := postgresql.Open(connURL)
+	log.Printf("%v", settings)
+
+	sess, err := postgresql.Open(settings)
 	checkErr(err)
 
 	var sf core.StorageFactory
-	sf = postgresqlrepo.NewStorage(session)
+	sf = postgresqlrepo.NewStorage(sess)
 
 	var (
 		validator  core.Validator

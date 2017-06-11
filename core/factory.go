@@ -35,7 +35,6 @@ type (
 	}
 )
 
-// New instances new engine factory
 func New(sf StorageFactory, ms MailSender, v Validator, jwt JWTSignParser, emitter Emitter) Factory {
 	return &factory{
 		StorageFactory: sf,

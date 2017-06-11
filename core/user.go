@@ -144,7 +144,6 @@ func (u *user) Register(r *RegisterRequest) (*domain.User, error) {
 	usr.Email = r.Email
 	usr.SetPassword(r.Password)
 	usr.Confirmed = r.Confirmed
-	usr.IsAdmin = boolPtr(false)
 
 	if err := u.repo.Add(&usr); err != nil {
 		return nil, err

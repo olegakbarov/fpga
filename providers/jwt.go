@@ -3,11 +3,11 @@ package providers
 import (
 	"fmt"
 
-	// 	"github.com/alioygur/gocart/engine"
 	jwtgo "github.com/dgrijalva/jwt-go"
+	"github.com/olegakbarov/io.confs.core/core"
 )
 
-func NewJWT() engine.JWTSignParser {
+func NewJWT() core.JWTSignParser {
 	return &jwt{}
 }
 
@@ -43,8 +43,8 @@ func (j *jwt) Parse(tokenStr string, secret string) (map[string]interface{}, err
 
 func newTokenErr(err *jwtgo.ValidationError) error {
 	if err.Errors == jwtgo.ValidationErrorExpired {
-		return engine.NewTokenErr(err.Error(), true)
+		return core.NewTokenErr(err.Error(), true)
 	}
 
-	return engine.NewTokenErr(err.Error(), false)
+	return core.NewTokenErr(err.Error(), false)
 }

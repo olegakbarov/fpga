@@ -1,43 +1,17 @@
-package mailer
+package providers
 
-import "fmt"
-import "sync"
+import "log"
 
-type (
-	// Mailer app mailer interface
-	Mailer interface {
-		SendWelcomeMail(to string, activationURL string) error
-		SendPasswordResetLink(to string, resetLink string) error
-	}
-
-	mail struct {
-		Mailer
-		ms MailSender
-	}
-)
-
-var (
-	mailOnce     sync.Once
-	mailInstance *mail
-)
-
-func (f *factory) NewMail() Mailer {
-	mailOnce.Do(func() {
-		mailInstance = &mail{ms: f.ms}
-	})
-	return mailInstance
+// NewFakeMail instances a new FakeMail
+func NewFakeMail() *FakeMail {
+	return &FakeMail{}
 }
 
-func (m *mail) SendWelcomeMail(to string, activationURL string) error {
-	subject := "Welcome"
-	body := fmt.Sprintf("Welcome! Please click here to activate your account. %s", activationURL)
+// FakeMail is fake mail driver. It logs mails to stdout
+type FakeMail struct{}
 
-	return m.ms.Send([]string{to}, subject, []byte(body))
-}
-
-func (m *mail) SendPasswordResetLink(to string, resetLink string) error {
-	subject := "Password reset"
-	body := fmt.Sprintf("Please click below link to reset your password <br/> %s", resetLink)
-
-	return m.ms.Send([]string{to}, subject, []byte(body))
+// Send logs mail to stdout and returns nil
+func (fm *FakeMail) Send(to []string, subject string, body []byte) error {
+	log.Printf("Mail sent! to: %v, subject: %s, body: %s", to, subject, body)
+	return nil
 }
