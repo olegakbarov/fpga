@@ -11,3 +11,4 @@ loadtest
 .env
 confs.data
 devserver.sh
+migrate.sh
