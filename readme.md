@@ -1,6 +1,6 @@
-### io.confs.core
+### go-web-backend
 
-Dockerized API service
+Dockerized API service for web app
 
 ### Prerequisites
 

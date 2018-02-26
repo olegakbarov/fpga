@@ -17,8 +17,8 @@ func NewWebAdapter(f core.Factory) http.Handler {
 
 	user := newUser(f)
 
-	r.Handle("/api/v1/conf/signup", base.Then(errHandlerFunc(user.signup))).Methods("POST")
-	r.Handle("/api/v1/conf/login", base.Then(errHandlerFunc(user.login))).Methods("POST")
+	r.Handle("/api/v1/signup", base.Then(errHandlerFunc(user.signup))).Methods("POST")
+	r.Handle("/api/v1/login", base.Then(errHandlerFunc(user.login))).Methods("POST")
 	// r.Handle("/api/v1/conf/logout", base.Then(errHandlerFunc(user.logout))).Methods("POST")
 
 	// router.GET("/api/v1/conf", handlers.GetAll)

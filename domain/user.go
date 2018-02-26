@@ -24,6 +24,7 @@ type User struct {
 	Model        `db:",inline"`
 	PasswordHash string `json:"password_hash"`
 	Confirmed    *bool  `json:"-"`
+	Deleted      *bool  `json:"-"`
 	UserPublicFields
 }
 
