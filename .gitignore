@@ -1,19 +1,2 @@
-<<<<<<< HEAD
 /target
 node_modules
-=======
-scripts
-frontend
-data
-sqls
-confs.data
-notes.md
-main
-redocker
-run
-loadtest
-.env
-confs.data
-devserver.sh
-migrate.sh
->>>>>>> 40c30a0b5805be05402d06a9a2b129e3a2bb914f
