@@ -1,0 +1,66 @@
+{
+  "luts": [
+    {
+      "id": 0,
+      "truth_table": [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    },
+    {
+      "id": 1,
+      "truth_table": [0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1]
+    }
+  ],
+  "dffs": [
+    {
+      "id": 0
+    },
+    {
+      "id": 1
+    }
+  ],
+  "brams": [
+    {
+      "id": 0,
+      "size": 1024,
+      "width": 8,
+      "connections": {
+        "address": { "LUT": { "id": 1, "port": 0 } },
+        "data_in": { "Input": { "name": "data_in" } },
+        "data_out": { "Output": { "name": "data_out" } },
+        "write_enable": { "DFF": { "id": 1, "port": "Q" } },
+        "clock": { "Input": { "name": "clock" } }
+      }
+    }
+  ],
+  "connections": [
+    {
+      "from": { "Input": { "name": "input1" } },
+      "to": { "LUT": { "id": 0, "port": 0 } }
+    },
+    {
+      "from": { "Input": { "name": "input2" } },
+      "to": { "LUT": { "id": 0, "port": 1 } }
+    },
+    {
+      "from": { "LUT": { "id": 0, "port": 0 } },
+      "to": { "DFF": { "id": 0, "port": "D" } }
+    },
+    {
+      "from": { "DFF": { "id": 0, "port": "Q" } },
+      "to": { "Output": { "name": "output1" } }
+    },
+    {
+      "from": { "Input": { "name": "input3" } },
+      "to": { "LUT": { "id": 1, "port": 1 } }
+    },
+    {
+      "from": { "Input": { "name": "input4" } },
+      "to": { "LUT": { "id": 1, "port": 2 } }
+    },
+    {
+      "from": { "LUT": { "id": 1, "port": 0 } },
+      "to": { "DFF": { "id": 1, "port": "D" } }
+    }
+  ],
+  "inputs": ["input1", "input2", "input3", "input4", "data_in", "clock"],
+  "outputs": ["output1", "data_out"]
+}
