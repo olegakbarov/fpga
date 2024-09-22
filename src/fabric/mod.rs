@@ -158,7 +158,7 @@ impl FPGAFabric {
                 .get(name)
                 .cloned()
                 .ok_or_else(|| format!("Output {} not found", name)),
-            ElementPort::LUT { id, port } => {
+            ElementPort::LUT { id, .. } => {
                 let lut = self
                     .luts
                     .get(id)
@@ -181,37 +181,6 @@ impl FPGAFabric {
                 .cloned()
                 .ok_or_else(|| format!("BRAM port {} not found for BRAM {}", port, id)),
         }
-    }
-
-    fn add_lut(&mut self, id: usize, truth_table: [bool; 16]) {
-        let lut = LUT::new(id, truth_table);
-        self.luts.insert(id, lut);
-    }
-
-    fn add_dff(&mut self, id: usize) {
-        let dff = DFF::new(id);
-        self.dffs.insert(id, dff);
-    }
-
-    fn add_bram(&mut self, id: usize, size: usize, width: usize) {
-        let bram = BlockRAM::new(id, size, width);
-        self.brams.insert(id, bram);
-
-        for port in &["address", "data_in", "data_out", "write_enable", "clock"] {
-            let wire_id = self.create_wire();
-            self.bram_connections
-                .insert((id, port.to_string()), wire_id);
-        }
-    }
-
-    fn add_input(&mut self, name: &str) {
-        let wire_id = self.create_wire();
-        self.inputs.insert(name.to_string(), wire_id);
-    }
-
-    fn add_output(&mut self, name: &str) {
-        let wire_id = self.create_wire();
-        self.outputs.insert(name.to_string(), wire_id);
     }
 
     pub fn set_input(&mut self, name: &str, value: usize) -> Result<(), String> {
